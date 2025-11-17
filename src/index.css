@@ -130,6 +130,11 @@ body[dir="ltr"] {
   --sidebar-ring: oklch(0.556 0 0);
 }
 
+@theme{
+  --color-main-green:#04332b;
+  --color-main-gold:#ddd1b9
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

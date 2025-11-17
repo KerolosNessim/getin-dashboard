@@ -4,6 +4,7 @@ import ProductsPage from "./pages/ProductsPage/ProductsPage";
 import SingleProductPage from "./pages/singleProductPage/SingleProductPage";
 import OrdersPage from "./pages/OrdersPage/OrdersPage";
 import CalculatorPage from "./pages/CalculatorPage/CalculatorPage";
+import SingleOrderPage from "./pages/SingleOrderPage/SingleOrderPage";
 
 function App() {
   const router = createBrowserRouter([
@@ -22,6 +23,10 @@ function App() {
         {
           path: '/orders',
           element: <OrdersPage />
+        },
+        {
+          path: '/orders/:id',
+          element: <SingleOrderPage />
         },
         {
           path: '/calculator',

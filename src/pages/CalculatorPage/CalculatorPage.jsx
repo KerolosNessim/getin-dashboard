@@ -61,13 +61,13 @@ useEffect(() => {
 
       <div className=" gap-6">
 
-        <div className=" bg-white/80 p-4 rounded-2xl shadow shadow-blue-600/30 ">
+        <div className=" bg-white/80 p-4 rounded-2xl shadow shadow-main-green/30 ">
           <div className="space-y-4">
 
             {/* unified input (expression + result) */}
             <input
               ref={inputRef}
-              className="w-full rounded-md p-3 text-2xl font-semibold outline-none border border-blue-600"
+              className="w-full rounded-md p-3 text-2xl font-semibold outline-none border border-main-green"
               value={expr}
               onChange={onChange}
               onKeyDown={onKeyDown}
@@ -82,7 +82,7 @@ useEffect(() => {
                   type="button"
                   onClick={() => press(b)}
                   className={`px-3 py-4  rounded-lg text-lg font-medium shadow-sm border 
-                    ${b === '=' ? 'col-span-4 bg-blue-600 text-white' : 'bg-slate-100'}
+                    ${b === '=' ? 'col-span-4 bg-main-green text-main-gold' : 'bg-main-gold/20 text-main-green'}
                   `}
                 >
                   {b}
