@@ -1,14 +1,24 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Clock, CheckCircle, MapPin, ShoppingBag, Calendar, Clock as ClockIcon, Eye } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { FaCheck } from 'react-icons/fa';
+import { GiCardExchange } from "react-icons/gi";
 
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import { FaCheck, FaTimes } from 'react-icons/fa';
 const OrderCard = ({ order, onStatusChange, withStatusChangeButton = true }) => {
   const isCompleted = order.status === 'completed';
-  const bgColor = isCompleted ? 'bg-main-green/10' : 'bg-main-gold/20';
-  const textColor = isCompleted ? 'text-main-green' : 'text-yellow-700';
-  const borderColor = isCompleted ? 'border-main-green' : 'border-main-gold';
-
+  const isCancelled = order.status === 'canceled';
+  const bgColor = isCompleted ? 'bg-main-green/10' : isCancelled ? 'bg-red-50' : 'bg-main-gold/20';
+  const textColor = isCompleted ? 'text-main-green' : isCancelled ? 'text-red-700' : 'text-yellow-700';
+  const borderColor = isCompleted ? 'border-main-green' : isCancelled ? 'border-red-500' : 'border-main-gold';
+  const [isOpen, setIsOpen] = useState(false);
   // Format the date to be more readable
   const formatDate = (dateTime) => {
     const options = {
@@ -20,6 +30,10 @@ const OrderCard = ({ order, onStatusChange, withStatusChangeButton = true }) => 
     };
     return new Date(dateTime).toLocaleDateString('en-US', options);
   };
+  function handleStatusChange(status) {
+    onStatusChange(order.id, status);
+    setIsOpen(false);
+  }
 
   return (
     <div className={`border rounded-lg p-4  ${bgColor} border-l-4 ${borderColor}-500 ${borderColor} transition-all hover:shadow-md`}>
@@ -35,7 +49,10 @@ const OrderCard = ({ order, onStatusChange, withStatusChangeButton = true }) => 
           </h3>
           <p className="text-sm text-gray-600">{formatDate(order.createdAt)}</p>
         </div>
-        <span className={`px-3 py-1 rounded-full text-sm font-medium ${isCompleted ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}`}>
+        <span className={`px-3 py-1 rounded-full text-sm font-medium ${isCompleted ? 'bg-green-100 text-green-800' :
+          isCancelled ? 'bg-red-100 text-red-800' :
+            'bg-yellow-100 text-yellow-800'
+          }`}>
           {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
         </span>
       </div>
@@ -67,14 +84,36 @@ const OrderCard = ({ order, onStatusChange, withStatusChangeButton = true }) => 
         {
           withStatusChangeButton && (
             order.status === 'pending' && (
-              <button onClick={() => onStatusChange(order.id, 'completed')} className="px-4 py-2 rounded-md text-sm text-main-green font-medium flex items-center gap-1 bg-main-green/30 hover:bg-main-green/20">
-                <FaCheck size={16} />
-                Change Status
-              </button>
+              <Dialog>
+                <DialogTrigger className="px-4 py-2 rounded-md text-sm text-main-green font-medium flex items-center gap-1 bg-main-green/30 hover:bg-main-green/20">
+                  <GiCardExchange />
+                  Change Status
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader className={"space-y-4"}>
+                    <DialogTitle className={"text-main-green text-xl font-bold text-center"}>Change order's status</DialogTitle>
+                    <DialogDescription className="flex items-center justify-center gap-2">
+                      <button className="px-4 py-2 rounded-md text-sm text-main-green font-medium flex items-center gap-1 bg-main-green/30 hover:bg-main-green/20"
+                        onClick={() => handleStatusChange('completed')}>
+                        <FaCheck />
+                        Completed
+                      </button>
+                      <button className="px-4 py-2 rounded-md text-sm text-red-500 font-medium flex items-center gap-1 bg-red-200 hover:bg-red-300"
+                        onClick={() => handleStatusChange('canceled')}>
+                        <FaTimes />
+                        Canceled
+                      </button>
+                    </DialogDescription>
+                  </DialogHeader>
+                </DialogContent>
+              </Dialog>
             )
           )
         }
-        <Link to={`/orders/${order.id}`} className={`px-4 py-2 rounded-md text-sm text-main-green font-medium flex items-center gap-1 ${isCompleted ? 'bg-main-green/30  hover:bg-main-green/20' : 'bg-main-gold/40  hover:bg-main-gold/20'}`}>
+        <Link to={`/orders/${order.id}`} className={`px-4 py-2 rounded-md text-sm font-medium flex items-center gap-1 ${isCompleted ? 'text-main-green bg-main-green/30 hover:bg-main-green/20' :
+          isCancelled ? 'text-red-600 bg-red-100 hover:bg-red-200' :
+            'text-main-green bg-main-gold/40 hover:bg-main-gold/20'
+          }`}>
           <Eye size={16} />
           View Details
         </Link>

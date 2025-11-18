@@ -8,20 +8,59 @@ const OrdersPage = () => {
   const [allOrders, setAllOrders] = useState(orders)
   const [pendingOrders, setPendingOrders] = useState([])
   const [completedOrders, setCompletedOrders] = useState([])
+  const [canceledOrders, setCanceledOrders] = useState([])
 
   const handleStatusChange = (orderId, status) => {
     setAllOrders(allOrders.map(order => order.id === orderId ? { ...order, status } : order))
     setPendingOrders(pendingOrders.map(order => order.id === orderId ? { ...order, status } : order))
     setCompletedOrders(completedOrders.map(order => order.id === orderId ? { ...order, status } : order))
+    setCanceledOrders(canceledOrders.map(order => order.id === orderId ? { ...order, status } : order))
   }
 
   useEffect(() => {
     setPendingOrders(allOrders.filter(order => order.status === "pending"))
     setCompletedOrders(allOrders.filter(order => order.status === "completed"))
+    setCanceledOrders(allOrders.filter(order => order.status === "canceled"))
   }, [allOrders])
   return (
-    <div className="pb-4">
-      <SectionHeader title="Orders" />
+    <div className='grid grid-cols-3 gap-4 pb-4' >
+      <div>
+        <SectionHeader title={`Pending Orders (${pendingOrders.length})`} />
+        <div className='space-y-4 '>
+          {
+            pendingOrders?.length > 0 ?
+              pendingOrders?.map(order => (
+                <OrderCard key={order.id} order={order} onStatusChange={handleStatusChange} />
+              )) :
+              <div className='flex items-center justify-center h-20 bg-main-gold/20 border border-l-4 border-main-green/50 rounded-lg text-xl font-semibold text-main-green'>No orders found</div>
+          }
+        </div>
+      </div>
+      <div>
+        <SectionHeader title={`Completed Orders (${completedOrders.length})`} />
+        <div className='space-y-4 '>
+          {
+            completedOrders?.length > 0 ?
+              completedOrders?.map(order => (
+                <OrderCard key={order.id} order={order} onStatusChange={handleStatusChange} />
+              )) :
+              <div className='flex items-center justify-center h-20 bg-main-gold/20 border border-l-4 border-main-green/50 rounded-lg text-xl font-semibold text-main-green'>No orders found</div>
+          }
+        </div>
+      </div>
+      <div>
+        <SectionHeader title={`Canceled Orders (${canceledOrders.length})`} />
+        <div className='space-y-4 '>
+          {
+            canceledOrders?.length > 0 ?
+              canceledOrders?.map(order => (
+                <OrderCard key={order.id} order={order} onStatusChange={handleStatusChange} />
+              )) :
+              <div className='flex items-center justify-center h-20 bg-main-gold/20 border border-l-4 border-main-green/50 rounded-lg text-xl font-semibold text-main-green'>No orders found</div>
+          }
+        </div>
+      </div>
+      {/* <SectionHeader title="Orders" />
       <Tabs defaultValue="all" className="w-full">
         <TabsList className={"bg-transparent gap-2 "}>
           <TabsTrigger className={tabStyle} value="all">All ({allOrders.length})</TabsTrigger>
@@ -65,7 +104,7 @@ const OrdersPage = () => {
               <div className='flex items-center justify-center h-20 bg-main-gold/20 border border-l-4 border-main-green/50 rounded-lg text-xl font-semibold text-main-green'>No orders found</div>
           }
         </TabsContent>
-      </Tabs>
+      </Tabs> */}
     </div>
   )
 }

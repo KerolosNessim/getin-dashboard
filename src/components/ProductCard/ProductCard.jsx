@@ -23,7 +23,7 @@ const ProductCard = ({ product, onStatusChange, withStatusChangeButton = true })
   };
 
   return (
-    <Card className={`h-full bg-main-gold/20 transition-all duration-300 ${!isAvailable ? 'opacity-60' : 'hover:shadow-lg'}`}>
+    <Card className={`border border-main-gold border-l-4 h-full bg-main-gold/20 transition-all duration-300 ${!isAvailable ? 'opacity-60' : 'hover:shadow-lg'}`}>
       <CardContent className="flex items-center p-4">
         <div className="w-24 h-24 shrink-0">
           <img

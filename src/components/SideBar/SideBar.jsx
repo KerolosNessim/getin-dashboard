@@ -9,6 +9,7 @@ import {
   FaCalculator
 } from 'react-icons/fa';
 import { IoMdPower } from 'react-icons/io';
+import { MdCurrencyExchange } from 'react-icons/md';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 
 const SideBar = () => {
@@ -22,6 +23,7 @@ const SideBar = () => {
   const menuItems = [
     { icon: <FaBox size={24} />, label: 'Products', path: '/' },
     { icon: <FaClipboardList size={24} />, label: 'Orders', path: '/orders' },
+    { icon: <MdCurrencyExchange size={24} />, label: 'Reports', path: '/reports' },
     { icon: <FaFlask size={24} />, label: 'Raw Materials', path: '/raw-materials' },
     { icon: <FaTruck size={24} />, label: 'External Materials', path: '/external-materials' },
     { icon: <FaCalculator size={24} />, label: 'Calculator', path: '/calculator' },
@@ -35,11 +37,11 @@ const SideBar = () => {
   ];
 
   return (
-    <aside className='shrink-0 w-fit h-screen bg-main-gold/30 shadow-md flex flex-col items-center py-4 px-2 space-y-6 '>
+    <aside className='shrink-0 w-fit h-screen bg-main-gold/30 shadow-md flex flex-col items-center py-4 px-2 space-y-5 '>
       <Link to="/" className='w-16 h-16 overflow-hidden rounded-lg flex items-center justify-center text-white font-bold text-xl'>
         <img src="/logo.jpg" alt="logo" className='w-full h-full object-cover' />
       </Link>
-      <nav className='w-full flex-1 flex flex-col items-center space-y-6 overflow-y-auto no-scrollbar'>
+      <nav className='w-full flex-1 flex flex-col items-center space-y-5 overflow-y-auto no-scrollbar'>
         {menuItems.map((item, index) => (
           item.isButton ? (
             <button

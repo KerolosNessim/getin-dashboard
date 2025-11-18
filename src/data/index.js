@@ -276,7 +276,7 @@ export const products = [
 export const orders = [
   {
     id: "T142",
-    status: "pending",
+    status: "canceled",
     type: "Pickup",
     orderNumber: 482913,
     itemsCount: 5,
@@ -455,7 +455,7 @@ export const orders = [
 
   {
     id: "T233",
-    status: "completed",
+    status: "canceled",
     type: "Pickup",
     orderNumber: 599221,
     itemsCount: 3,
@@ -478,3 +478,6 @@ export const orders = [
     note: "",
   },
 ];
+
+
+

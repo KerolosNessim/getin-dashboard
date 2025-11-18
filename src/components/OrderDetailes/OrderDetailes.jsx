@@ -12,9 +12,10 @@ import {
 const OrderDetails = ({ order }) => {
 
   const isCompleted = order?.status === "completed";
-  const textColor = isCompleted ? "text-main-green" : "text-yellow-700";
-  const borderColor = isCompleted ? "border-main-green" : "border-main-gold";
-  const bgColor = isCompleted ? 'bg-main-green/10' : 'bg-main-gold/20';
+  const isCancelled = order?.status === "canceled";
+  const textColor = isCompleted ? "text-main-green" : isCancelled ? "text-red-700" : "text-yellow-700";
+  const borderColor = isCompleted ? "border-main-green" : isCancelled ? "border-red-500" : "border-main-gold";
+  const bgColor = isCompleted ? 'bg-main-green/10' : isCancelled ? 'bg-red-50' : 'bg-main-gold/20';
   const formatDate = (dateTime) =>
     new Date(dateTime).toLocaleString("en-US", {
       year: "numeric",
@@ -33,6 +34,8 @@ const OrderDetails = ({ order }) => {
           <h2 className={`text-2xl font-bold flex items-center gap-2 ${textColor}`}>
             {isCompleted ? (
               <CheckCircle className="w-6 h-6" />
+            ) : isCancelled ? (
+              <Clock className="w-6 h-6 text-red-700" />
             ) : (
               <Clock className="w-6 h-6" />
             )}
@@ -42,9 +45,9 @@ const OrderDetails = ({ order }) => {
         </div>
 
         <span
-          className={`px-4 py-1 rounded-full text-sm font-medium ${isCompleted
-              ? "bg-green-100 text-green-800"
-              : "bg-yellow-100 text-yellow-800"
+          className={`px-4 py-1 rounded-full text-sm font-medium ${isCompleted ? 'bg-green-100 text-green-800' :
+              isCancelled ? 'bg-red-100 text-red-800' :
+                'bg-yellow-100 text-yellow-800'
             }`}
         >
           {order?.status?.charAt(0)?.toUpperCase() + order?.status?.slice(1)}

@@ -5,6 +5,8 @@ import SingleProductPage from "./pages/singleProductPage/SingleProductPage";
 import OrdersPage from "./pages/OrdersPage/OrdersPage";
 import CalculatorPage from "./pages/CalculatorPage/CalculatorPage";
 import SingleOrderPage from "./pages/SingleOrderPage/SingleOrderPage";
+import TransactionsPage from "./pages/ReportsPage/ReportsPage";
+import ReportsPage from "./pages/ReportsPage/ReportsPage";
 
 function App() {
   const router = createBrowserRouter([
@@ -31,6 +33,10 @@ function App() {
         {
           path: '/calculator',
           element: <CalculatorPage />
+        },
+        {
+          path: '/reports',
+          element: <ReportsPage />
         }
       ]
 
