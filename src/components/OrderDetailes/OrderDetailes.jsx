@@ -46,8 +46,8 @@ const OrderDetails = ({ order }) => {
 
         <span
           className={`px-4 py-1 rounded-full text-sm font-medium ${isCompleted ? 'bg-green-100 text-green-800' :
-              isCancelled ? 'bg-red-100 text-red-800' :
-                'bg-yellow-100 text-yellow-800'
+            isCancelled ? 'bg-red-100 text-red-800' :
+              'bg-yellow-100 text-yellow-800'
             }`}
         >
           {order?.status?.charAt(0)?.toUpperCase() + order?.status?.slice(1)}
@@ -83,7 +83,7 @@ const OrderDetails = ({ order }) => {
               className="flex justify-between text-main-green p-2 rounded-md"
             >
               <span>{item.name} × {item.quantity}</span>
-              <span className="font-medium">${item.price}</span>
+              <span className="font-medium">₺{item.price}</span>
             </div>
           ))}
         </div>
@@ -99,22 +99,22 @@ const OrderDetails = ({ order }) => {
         <div className="space-y-1 text-sm">
           <div className="flex justify-between">
             <span className="text-main-green">Subtotal</span>
-            <span className="font-medium">${order?.totals?.subtotal}</span>
+            <span className="font-medium">₺{order?.totals?.subtotal}</span>
           </div>
 
           <div className="flex justify-between">
             <span className="text-main-green">Discount</span>
-            <span className="font-medium">-${order?.totals?.discount}</span>
+            <span className="font-medium">-₺{order?.totals?.discount}</span>
           </div>
 
           <div className="flex justify-between">
             <span className="text-main-green">User Paid</span>
-            <span className="font-medium">${order?.totals?.userPaid}</span>
+            <span className="font-medium">₺{order?.totals?.userPaid}</span>
           </div>
 
           <div className="flex justify-between font-bold text-lg mt-2 pt-2 border-t">
             <span>Total</span>
-            <span>${order?.totals?.finalAmount}</span>
+            <span>₺{order?.totals?.finalAmount}</span>
           </div>
         </div>
       </div>

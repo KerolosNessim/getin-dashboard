@@ -8,7 +8,7 @@ const FinanceDtailes = () => {
         {/*  Sales Amount Card */}
         <Card className="md:col-span-2 border border-l-4 border-main-gold bg-main-gold/20 ">
           <CardHeader >
-            <CardTitle className="text-main-green text-xl font-semibold">Sales Amount ($)</CardTitle>
+            <CardTitle className="text-main-green text-xl font-semibold">Sales Amount (₺)</CardTitle>
           </CardHeader>
           <CardContent className='flex  items-center justify-between'>
             <p className="text-3xl font-semibold text-main-green">19,775.40</p>
@@ -21,7 +21,7 @@ const FinanceDtailes = () => {
         {/* Net Revenue Card */}
         <Card className="md:col-span-2 border border-l-4 border-main-gold bg-main-gold/20 ">
           <CardHeader >
-            <CardTitle className="text-main-green text-xl font-semibold">Net Revenue ($)</CardTitle>
+            <CardTitle className="text-main-green text-xl font-semibold">Net Revenue (₺)</CardTitle>
           </CardHeader>
           <CardContent className='flex  items-center justify-between'>
             <p className="text-3xl font-semibold text-main-green"> 12211.44</p>
@@ -34,7 +34,7 @@ const FinanceDtailes = () => {
         {/* Discount Amount Card */}
         <Card className=" border border-l-4 border-main-gold bg-main-gold/20 ">
           <CardHeader >
-            <CardTitle className="text-main-green text-xl font-semibold">Discount Amount ($)</CardTitle>
+            <CardTitle className="text-main-green text-xl font-semibold">Discount Amount (₺)</CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-3xl font-semibold text-main-green">7563.96</p>
@@ -60,7 +60,7 @@ const FinanceDtailes = () => {
         {/* Average Order Amount (Before Discount) Card */}
         <Card className=" border border-l-4 border-main-gold bg-main-gold/20 ">
           <CardHeader >
-            <CardTitle className="text-main-green text-xl font-semibold">Average (Before Discount) ($)</CardTitle>
+            <CardTitle className="text-main-green text-xl font-semibold">Average (Before Discount) (₺)</CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-3xl font-semibold text-main-green">27.31</p>
@@ -73,7 +73,7 @@ const FinanceDtailes = () => {
         {/* Average Order Amount (after Discount) Card */}
         <Card className=" border border-l-4 border-main-gold bg-main-gold/20 ">
           <CardHeader >
-            <CardTitle className="text-main-green text-xl font-semibold">Average (After Discount) ($)</CardTitle>
+            <CardTitle className="text-main-green text-xl font-semibold">Average (After Discount) (₺)</CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-3xl font-semibold text-main-green">16.87</p>
@@ -106,24 +106,24 @@ const FinanceDtailes = () => {
               </thead>
               <tbody className="text-main-green font-semibold">
 
-                    <tr  className="border-b border-main-green/20">
-                      <td className="p-2">In Store</td>
-                      <td className="p-2">17,775.4</td>
-                      <td className="p-2">11,211.44</td>
-                      <td className="p-2">7,563.96</td>
-                      <td className="p-2">700</td>
-                      <td className="p-2">27.31</td>
-                      <td className="p-2">16.87</td>
-                    </tr>
-                    <tr  className="border-b border-main-green/20">
-                      <td className="p-2">Delivery</td>
-                      <td className="p-2">2,775.4</td>
-                      <td className="p-2">1,211.44</td>
-                      <td className="p-2">1,563.96</td>
-                      <td className="p-2">24</td>
-                      <td className="p-2">27.31</td>
-                      <td className="p-2">16.87</td>
-                    </tr>
+                <tr className="border-b border-main-green/20">
+                  <td className="p-2">In Store</td>
+                  <td className="p-2">17,775.4</td>
+                  <td className="p-2">11,211.44</td>
+                  <td className="p-2">7,563.96</td>
+                  <td className="p-2">700</td>
+                  <td className="p-2">27.31</td>
+                  <td className="p-2">16.87</td>
+                </tr>
+                <tr className="border-b border-main-green/20">
+                  <td className="p-2">Delivery</td>
+                  <td className="p-2">2,775.4</td>
+                  <td className="p-2">1,211.44</td>
+                  <td className="p-2">1,563.96</td>
+                  <td className="p-2">24</td>
+                  <td className="p-2">27.31</td>
+                  <td className="p-2">16.87</td>
+                </tr>
 
 
               </tbody>

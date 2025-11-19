@@ -76,7 +76,7 @@ const OrderCard = ({ order, onStatusChange, withStatusChangeButton = true }) => 
         </div>
         <div className="flex justify-between text-sm">
           <span className="text-gray-600">Total</span>
-          <span className="font-bold">${order?.totals?.finalAmount || '0.00'}</span>
+          <span className="font-bold">₺{order?.totals?.finalAmount || '0.00'}</span>
         </div>
       </div>
 

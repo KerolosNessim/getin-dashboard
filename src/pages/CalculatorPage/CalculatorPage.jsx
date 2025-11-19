@@ -52,9 +52,9 @@ export default function CalculatorPage() {
       setExpr(prev => String(calculateExpression(prev)));
     }
   }
-useEffect(() => {
-  inputRef.current?.focus();
-}, []);
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, []);
   return (
     <div className="max-w-2xl mx-auto p-4">
       <SectionHeader title="Calculator" />

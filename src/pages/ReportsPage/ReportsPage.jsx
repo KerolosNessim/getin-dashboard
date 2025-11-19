@@ -5,6 +5,8 @@
 
 import FinanceDtailes from "@/components/FinanceDetailes/FinanceDtailes";
 import FinanceReport from "@/components/FinanceReport/FinanceReport";
+import OperationsReports from "@/components/OperationsReports/OperationReports";
+import ProductsReports from "@/components/ProductsReports/ProductsReports";
 import SectionHeader from "@/components/SctionHeader/SectionHeader";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
@@ -12,16 +14,17 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 export default function ReportsPage() {
   const tabStyle = "bg-main-gold text-main-green text-base  h-12! data-[state=active]:bg-main-green data-[state=active]:text-main-gold"
   const reports = [
-    "Business Reports",
-    "Product Reports",
+    "Financial Reports",
+    "Operations Reports",
+    "Products Reports",
     "Daily Settlement",
     "Shift Handover",
     "Reconciliation Differences"
   ];
   return (
-    <div >
+    <div className="pb-4">
       {/* Header Section */}
-      <SectionHeader title="Transactions" />
+      <SectionHeader title="Reports" />
 
       {/* Tabs - Like the Chinese UI (Today / Yesterday / This Week / This Month / etc.) */}
       <Tabs defaultValue={reports[0]} className="w-full   ">
@@ -32,8 +35,14 @@ export default function ReportsPage() {
         </TabsList>
 
         {/* Main Dashboard Content */}
-        <TabsContent value={reports[0]}>
+        <TabsContent value={"Financial Reports"}>
           <FinanceReport  />
+        </TabsContent>
+        <TabsContent value={"Operations Reports"}>
+          <OperationsReports  />
+        </TabsContent>
+        <TabsContent value={"Products Reports"}>
+          <ProductsReports  />
         </TabsContent>
       </Tabs>
     </div>
