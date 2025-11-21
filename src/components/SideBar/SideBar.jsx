@@ -24,10 +24,10 @@ const SideBar = () => {
     { icon: <FaBox size={24} />, label: 'Products', path: '/' },
     { icon: <FaClipboardList size={24} />, label: 'Orders', path: '/orders' },
     { icon: <MdCurrencyExchange size={24} />, label: 'Reports', path: '/reports' },
-    { icon: <FaFlask size={24} />, label: 'Raw Materials', path: '/raw-materials' },
-    { icon: <FaTruck size={24} />, label: 'External Materials', path: '/external-materials' },
+    // { icon: <FaFlask size={24} />, label: 'Raw Materials', path: '/raw-materials' },
+    // { icon: <FaTruck size={24} />, label: 'External Materials', path: '/external-materials' },
     { icon: <FaCalculator size={24} />, label: 'Calculator', path: '/calculator' },
-    { icon: <FaUserClock size={24} />, label: 'Attendance', path: '/attendance' },
+    // { icon: <FaUserClock size={24} />, label: 'Attendance', path: '/attendance' },
     {
       icon: <IoMdPower size={24} />,
       label: 'Logout',

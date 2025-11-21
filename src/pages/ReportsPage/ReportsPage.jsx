@@ -3,11 +3,13 @@
 // Using shadcn/ui components for Cards, Tabs, and Buttons
 // All sections include comments for easy modification
 
+import DailySettlementRport from "@/components/DailySettlementRport/DailySettlementRport";
 import FinanceDtailes from "@/components/FinanceDetailes/FinanceDtailes";
 import FinanceReport from "@/components/FinanceReport/FinanceReport";
 import OperationsReports from "@/components/OperationsReports/OperationReports";
 import ProductsReports from "@/components/ProductsReports/ProductsReports";
 import SectionHeader from "@/components/SctionHeader/SectionHeader";
+import ShiftHandoverRport from "@/components/ShiftHandoverRport/ShiftHandoverRport";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 
@@ -43,6 +45,12 @@ export default function ReportsPage() {
         </TabsContent>
         <TabsContent value={"Products Reports"}>
           <ProductsReports  />
+        </TabsContent>
+        <TabsContent value={"Daily Settlement"}>
+          <DailySettlementRport  />
+        </TabsContent>
+        <TabsContent value={"Shift Handover"}>
+          <ShiftHandoverRport  />
         </TabsContent>
       </Tabs>
     </div>
