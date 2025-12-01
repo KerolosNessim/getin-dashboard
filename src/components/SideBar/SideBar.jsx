@@ -6,7 +6,10 @@ import {
   FaTruck,
   FaUserClock,
   FaSignOutAlt,
-  FaCalculator
+  FaCalculator,
+  FaWarehouse,
+  FaUndo,
+  FaStar
 } from 'react-icons/fa';
 import { IoMdPower } from 'react-icons/io';
 import { MdCurrencyExchange } from 'react-icons/md';
@@ -24,6 +27,9 @@ const SideBar = () => {
     { icon: <FaBox size={24} />, label: 'Products', path: '/' },
     { icon: <FaClipboardList size={24} />, label: 'Orders', path: '/orders' },
     { icon: <MdCurrencyExchange size={24} />, label: 'Reports', path: '/reports' },
+    { icon: <FaWarehouse size={24} />, label: 'Inventory', path: '/inventory' },
+    { icon: <FaUndo size={24} />, label: 'Returns', path: '/returns' },
+    { icon: <FaStar size={24} />, label: 'Loyalty', path: '/loyalty' },
     // { icon: <FaFlask size={24} />, label: 'Raw Materials', path: '/raw-materials' },
     // { icon: <FaTruck size={24} />, label: 'External Materials', path: '/external-materials' },
     { icon: <FaCalculator size={24} />, label: 'Calculator', path: '/calculator' },

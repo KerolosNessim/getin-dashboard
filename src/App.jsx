@@ -7,6 +7,10 @@ import CalculatorPage from "./pages/CalculatorPage/CalculatorPage";
 import SingleOrderPage from "./pages/SingleOrderPage/SingleOrderPage";
 import TransactionsPage from "./pages/ReportsPage/ReportsPage";
 import ReportsPage from "./pages/ReportsPage/ReportsPage";
+import InventoryPage from "./pages/InventoryPage/InventoryPage";
+import ReturnsPage from "./pages/ReturnsPage/ReturnsPage";
+import LoyaltyPage from "./pages/LoyaltyPage/LoyaltyPage";
+
 
 function App() {
   const router = createBrowserRouter([
@@ -37,6 +41,18 @@ function App() {
         {
           path: '/reports',
           element: <ReportsPage />
+        },
+        {
+          path: '/inventory',
+          element: <InventoryPage />
+        },
+        {
+          path: '/returns',
+          element: <ReturnsPage />
+        },
+        {
+          path: '/loyalty',
+          element: <LoyaltyPage />
         }
       ]
 
