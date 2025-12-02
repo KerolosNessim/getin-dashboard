@@ -10,6 +10,8 @@ import ReportsPage from "./pages/ReportsPage/ReportsPage";
 import InventoryPage from "./pages/InventoryPage/InventoryPage";
 import ReturnsPage from "./pages/ReturnsPage/ReturnsPage";
 import LoyaltyPage from "./pages/LoyaltyPage/LoyaltyPage";
+import RawMaterialsPage from "./pages/RawMaterialsPage/RawMaterialsPage";
+import { Toaster } from "./components/ui/sonner";
 
 
 function App() {
@@ -53,6 +55,10 @@ function App() {
         {
           path: '/loyalty',
           element: <LoyaltyPage />
+        },
+        {
+          path: '/raw-materials',
+          element: <RawMaterialsPage />
         }
       ]
 
@@ -62,6 +68,7 @@ function App() {
 
   return (
     <>
+      <Toaster position="top-center" richColors />
       <RouterProvider router={router} />
     </>
   )

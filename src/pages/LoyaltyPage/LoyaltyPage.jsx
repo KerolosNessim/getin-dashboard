@@ -213,7 +213,7 @@ export default function LoyaltyPage() {
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-700">Employee</label>
               <Select value={selectedEmployeeId} onValueChange={setSelectedEmployeeId}>
-                <SelectTrigger className="border-main-green/30">
+                <SelectTrigger className="border-main-green/30 w-full">
                   <SelectValue placeholder="Select employee" />
                 </SelectTrigger>
                 <SelectContent>
@@ -240,7 +240,7 @@ export default function LoyaltyPage() {
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-700">Reason</label>
               <Select value={pointsReason} onValueChange={setPointsReason}>
-                <SelectTrigger className="border-main-green/30">
+                <SelectTrigger className="border-main-green/30 w-full">
                   <SelectValue placeholder="Select reason" />
                 </SelectTrigger>
                 <SelectContent>

@@ -242,7 +242,7 @@ export default function ReturnsPage() {
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-700">Select Item</label>
               <Select value={newItemId} onValueChange={setNewItemId}>
-                <SelectTrigger className="border-main-green/30">
+                <SelectTrigger className="border-main-green/30 w-full">
                   <SelectValue placeholder="Select inventory item" />
                 </SelectTrigger>
                 <SelectContent>
@@ -269,7 +269,7 @@ export default function ReturnsPage() {
               <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-700">Reason</label>
                 <Select value={newReason} onValueChange={setNewReason}>
-                  <SelectTrigger className="border-main-green/30">
+                  <SelectTrigger className="border-main-green/30 w-full">
                     <SelectValue placeholder="Select reason" />
                   </SelectTrigger>
                   <SelectContent>

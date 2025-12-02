@@ -11,7 +11,7 @@ import {
   FaUndo,
   FaStar
 } from 'react-icons/fa';
-import { IoMdPower } from 'react-icons/io';
+import { IoMdPower, IoMdWarning } from 'react-icons/io';
 import { MdCurrencyExchange } from 'react-icons/md';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 
@@ -28,9 +28,9 @@ const SideBar = () => {
     { icon: <FaClipboardList size={24} />, label: 'Orders', path: '/orders' },
     { icon: <MdCurrencyExchange size={24} />, label: 'Reports', path: '/reports' },
     { icon: <FaWarehouse size={24} />, label: 'Inventory', path: '/inventory' },
-    { icon: <FaUndo size={24} />, label: 'Returns', path: '/returns' },
+    { icon: <IoMdWarning size={24} />, label: 'Discarding', path: '/returns' },
     { icon: <FaStar size={24} />, label: 'Loyalty', path: '/loyalty' },
-    // { icon: <FaFlask size={24} />, label: 'Raw Materials', path: '/raw-materials' },
+    { icon: <FaFlask size={24} />, label: 'Raw Materials', path: '/raw-materials' },
     // { icon: <FaTruck size={24} />, label: 'External Materials', path: '/external-materials' },
     { icon: <FaCalculator size={24} />, label: 'Calculator', path: '/calculator' },
     // { icon: <FaUserClock size={24} />, label: 'Attendance', path: '/attendance' },
