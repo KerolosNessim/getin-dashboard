@@ -11,6 +11,8 @@ import InventoryPage from "./pages/InventoryPage/InventoryPage";
 import ReturnsPage from "./pages/ReturnsPage/ReturnsPage";
 import LoyaltyPage from "./pages/LoyaltyPage/LoyaltyPage";
 import RawMaterialsPage from "./pages/RawMaterialsPage/RawMaterialsPage";
+import ExternalMaterialsPage from "./pages/ExternalMaterialsPage/ExternalMaterialsPage";
+import SettingsPage from "./pages/SettingsPage/SettingsPage";
 import { Toaster } from "./components/ui/sonner";
 
 
@@ -59,6 +61,14 @@ function App() {
         {
           path: '/raw-materials',
           element: <RawMaterialsPage />
+        },
+        {
+          path: '/external-materials',
+          element: <ExternalMaterialsPage />
+        },
+        {
+          path: '/settings',
+          element: <SettingsPage />
         }
       ]
 
