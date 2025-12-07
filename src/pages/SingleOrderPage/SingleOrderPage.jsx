@@ -1,3 +1,4 @@
+import BackwordBtn from '@/components/BackwordBtn/BackwordBtn'
 import OrderCard from '@/components/OrderCard/OrderCard'
 import OrderDetails from '@/components/OrderDetailes/OrderDetailes'
 import SectionHeader from '@/components/SctionHeader/SectionHeader'
@@ -40,7 +41,10 @@ const SingleOrderPage = () => {
 
       </div>
       <div className='col-span-2  h-[calc(100vh-1rem)] overflow-y-scroll no-scrollbar pb-4'>
+        <div className='flex items-center justify-between'>
         <SectionHeader title={"Order Details"} />
+        <BackwordBtn />
+        </div>
         <OrderDetails order={SingleOrder} />
 
 

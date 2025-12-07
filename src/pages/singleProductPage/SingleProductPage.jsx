@@ -1,3 +1,4 @@
+import BackwordBtn from '@/components/BackwordBtn/BackwordBtn'
 import ProductCard from '@/components/ProductCard/ProductCard'
 import ProductDetails from '@/components/ProductDetailes/ProductDetailes'
 import SectionHeader from '@/components/SctionHeader/SectionHeader'
@@ -15,8 +16,7 @@ const SingleProductPage = () => {
   }, [id])
 
   return (
-    <div className='grid grid-cols-3 gap-4  '>
-
+    <div className='grid grid-cols-3 gap-4 '>
       <div className='col-span-1  h-[calc(100vh-1rem)] overflow-y-scroll no-scrollbar'>
         <div className='flex items-start gap-2'>
           <SectionHeader title={"Rest Products"} />
@@ -30,7 +30,10 @@ const SingleProductPage = () => {
 
       </div>
       <div className='col-span-2  h-[calc(100vh-1rem)] overflow-y-scroll no-scrollbar pb-4'>
+        <div className='flex items-center justify-between'>
         <SectionHeader title={"Product Details"} />
+        <BackwordBtn />
+        </div>
         <ProductDetails product={singleProduct} />
 
 

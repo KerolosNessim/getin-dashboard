@@ -14,13 +14,13 @@ import {
 } from 'react-icons/fa';
 import { IoMdPower, IoMdWarning } from 'react-icons/io';
 import { MdCurrencyExchange } from 'react-icons/md';
-import { Link, NavLink, useNavigate } from 'react-router-dom';
+import { Link, NavLink, useNavigate, useLocation } from 'react-router-dom';
 
 const SideBar = () => {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleLogout = () => {
-    // Add your logout logic here
     navigate('/login');
   };
 
@@ -35,7 +35,6 @@ const SideBar = () => {
     { icon: <FaTruck size={24} />, label: 'External Materials', path: '/external-materials' },
     { icon: <FaCog size={24} />, label: 'Settings', path: '/settings' },
     { icon: <FaCalculator size={24} />, label: 'Calculator', path: '/calculator' },
-    // { icon: <FaUserClock size={24} />, label: 'Attendance', path: '/attendance' },
     {
       icon: <IoMdPower size={24} />,
       label: 'Logout',
@@ -64,11 +63,21 @@ const SideBar = () => {
             <NavLink
               key={index}
               to={item.path}
-              className={({ isActive }) =>
-                `flex flex-col items-center justify-center w-full p-2 space-y-1 
+              className={() => {
+                // Check if the current path should be considered active
+                let isActive = false;
+                // For Products (root path '/'), check if we're on home or any product detail page
+                if (item.path === '/') {
+                  isActive = location.pathname === '/' || location.pathname.startsWith('/products');
+                }
+                // For other paths, check if current path starts with the menu item path
+                else {
+                  isActive = location.pathname.startsWith(item.path);
+                }
+                return `flex flex-col items-center justify-center w-full p-2 space-y-1 
                 transition-colors duration-200 hover:bg-main-green hover:text-main-gold rounded-lg
-                ${isActive ? 'bg-main-green text-main-gold' : 'text-main-green'}`
-              }
+                ${isActive ? 'bg-main-green text-main-gold' : 'text-main-green'}`;
+              }}
             >
               <span>{item.icon}</span>
               <span className='text-xs font-medium text-center'>{item.label}</span>

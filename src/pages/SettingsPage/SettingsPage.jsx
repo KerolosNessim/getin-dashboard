@@ -36,6 +36,8 @@ export default function SettingsPage() {
 
   // Business Settings State
   const [businessSettings, setBusinessSettings] = useState({
+    branchName: 'Tahrir Branch',
+    phoneNumber: '+20 123 456 7890',
     openingTime: '08:00',
     closingTime: '22:00',
     peakHoursStart: '12:00',
@@ -143,6 +145,39 @@ export default function SettingsPage() {
               <CardDescription>Configure your business hours, order settings, and operational limits</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
+              {/* Branch Information */}
+              <div className="space-y-4">
+                <h3 className="text-sm font-semibold text-gray-900 flex items-center gap-2">
+                  <Building2 className="w-4 h-4" />
+                  Branch Information
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="branchName">Branch Name</Label>
+                    <Input
+                      id="branchName"
+                      placeholder="e.g., Tahrir Branch"
+                      value={businessSettings.branchName}
+                      onChange={(e) => setBusinessSettings({ ...businessSettings, branchName: e.target.value })}
+                      className="border-main-green/30"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="phoneNumber">Phone Number</Label>
+                    <Input
+                      id="phoneNumber"
+                      type="tel"
+                      placeholder="+20 123 456 7890"
+                      value={businessSettings.phoneNumber}
+                      onChange={(e) => setBusinessSettings({ ...businessSettings, phoneNumber: e.target.value })}
+                      className="border-main-green/30"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <Separator />
+
               {/* Working Hours */}
               <div className="space-y-4">
                 <h3 className="text-sm font-semibold text-gray-900 flex items-center gap-2">

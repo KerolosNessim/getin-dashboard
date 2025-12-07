@@ -29,7 +29,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
 
 export default function ReturnsPage() {
   // State Management
@@ -286,12 +285,21 @@ export default function ReturnsPage() {
 
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-700">Notes</label>
-              <Textarea
-                placeholder="Additional details about the return..."
-                value={newNotes}
-                onChange={(e) => setNewNotes(e.target.value)}
-                className="border-main-green/30 min-h-[100px]"
-              />
+              <Select value={newNotes} onValueChange={setNewNotes}>
+                <SelectTrigger className="border-main-green/30 w-full">
+                  <SelectValue placeholder="Select note (optional)" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Product arrived damaged">Product arrived damaged</SelectItem>
+                  <SelectItem value="Expired before delivery">Expired before delivery</SelectItem>
+                  <SelectItem value="Quality below standards">Quality below standards</SelectItem>
+                  <SelectItem value="Wrong specifications">Wrong specifications</SelectItem>
+                  <SelectItem value="Supplier error">Supplier error</SelectItem>
+                  <SelectItem value="Customer complaint">Customer complaint</SelectItem>
+                  <SelectItem value="Overstocked">Overstocked</SelectItem>
+                  <SelectItem value="Not needed anymore">Not needed anymore</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           </div>
 

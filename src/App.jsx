@@ -13,11 +13,16 @@ import LoyaltyPage from "./pages/LoyaltyPage/LoyaltyPage";
 import RawMaterialsPage from "./pages/RawMaterialsPage/RawMaterialsPage";
 import ExternalMaterialsPage from "./pages/ExternalMaterialsPage/ExternalMaterialsPage";
 import SettingsPage from "./pages/SettingsPage/SettingsPage";
+import LoginPage from "./pages/LoginPage/LoginPage";
 import { Toaster } from "./components/ui/sonner";
 
 
 function App() {
   const router = createBrowserRouter([
+    {
+      path: '/login',
+      element: <LoginPage />
+    },
     {
       path: '/',
       element: <Layout />,

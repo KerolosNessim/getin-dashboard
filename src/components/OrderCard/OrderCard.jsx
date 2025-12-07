@@ -98,11 +98,6 @@ const OrderCard = ({ order, onStatusChange, withStatusChangeButton = true }) => 
                         <FaCheck />
                         Completed
                       </button>
-                      <button className="px-4 py-2 rounded-md text-sm text-red-500 font-medium flex items-center gap-1 bg-red-200 hover:bg-red-300"
-                        onClick={() => handleStatusChange('canceled')}>
-                        <FaTimes />
-                        Canceled
-                      </button>
                     </DialogDescription>
                   </DialogHeader>
                 </DialogContent>
