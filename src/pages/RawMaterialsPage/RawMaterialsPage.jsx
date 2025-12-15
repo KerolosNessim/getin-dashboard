@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { inventory } from '@/data';
+import { inventory, inventoryHistory } from '@/data';
 import SectionHeader from '@/components/SctionHeader/SectionHeader';
 import {
   Search,
@@ -12,7 +12,8 @@ import {
   Plus,
   History,
   Send,
-  XCircle
+  XCircle,
+  ArrowUpDown // Add sorting icon
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -42,6 +43,7 @@ export default function RawMaterialsPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('all');
   const [statusFilter, setStatusFilter] = useState('all');
+  const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' }); // Sort config
 
   // Order Dialog State
   const [isOrderDialogOpen, setIsOrderDialogOpen] = useState(false);
@@ -91,6 +93,28 @@ export default function RawMaterialsPage() {
       return matchesSearch && matchesCategory && matchesStatus;
     });
   }, [materials, searchQuery, categoryFilter, statusFilter]);
+
+  // Sorting Logic
+  const sortedMaterials = useMemo(() => {
+    let sorted = [...filteredMaterials];
+    if (sortConfig.key) {
+      sorted.sort((a, b) => {
+        if (sortConfig.key === 'name') {
+          return sortConfig.direction === 'asc'
+            ? a.name.localeCompare(b.name)
+            : b.name.localeCompare(a.name);
+        }
+        if (sortConfig.key === 'status') {
+          const statusOrder = { critical: 0, low: 1, warning: 2, good: 3 };
+          const statusA = statusOrder[getStockStatus(a).status] ?? 4;
+          const statusB = statusOrder[getStockStatus(b).status] ?? 4;
+          return sortConfig.direction === 'asc' ? statusA - statusB : statusB - statusA;
+        }
+        return 0;
+      });
+    }
+    return sorted;
+  }, [filteredMaterials, sortConfig]);
 
   // Helpers
   function getStockStatus(item) {
@@ -188,6 +212,15 @@ export default function RawMaterialsPage() {
     setRequests(updatedRequests);
     setIsAdminDialogOpen(false);
     toast.error('Request rejected');
+  };
+
+  // Handle Sort
+  const handleSort = (key) => {
+    let direction = 'asc';
+    if (sortConfig.key === key && sortConfig.direction === 'asc') {
+      direction = 'desc';
+    }
+    setSortConfig({ key, direction });
   };
 
   // Handle Deliver Request
@@ -291,31 +324,49 @@ export default function RawMaterialsPage() {
           <table className="w-full text-sm text-left">
             <thead className="bg-main-green text-main-gold uppercase text-xs font-semibold">
               <tr>
-                <th className="px-6 py-4">Material Name</th>
+                <th
+                  className="px-6 py-4 cursor-pointer hover:bg-main-green/90 transition-colors"
+                  onClick={() => handleSort('name')}
+                >
+                  <div className="flex items-center gap-2">
+                    Material Name <ArrowUpDown className="w-4 h-4" />
+                  </div>
+                </th>
                 <th className="px-6 py-4">Category</th>
                 <th className="px-6 py-4">Unit</th>
                 <th className="px-6 py-4 text-center">Current Qty</th>
                 <th className="px-6 py-4 text-center">Min Limit</th>
                 <th className="px-6 py-4 text-center">Max Limit</th>
                 <th className="px-6 py-4 text-center">Available to Order</th>
-                <th className="px-6 py-4 text-center">Status</th>
+                <th
+                  className="px-6 py-4 text-center cursor-pointer hover:bg-main-green/90 transition-colors"
+                  onClick={() => handleSort('status')}
+                >
+                  <div className="flex items-center justify-center gap-2">
+                    Status <ArrowUpDown className="w-4 h-4" />
+                  </div>
+                </th>
                 <th className="px-6 py-4 text-center">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
-              {filteredMaterials.map((item) => {
+              {sortedMaterials.map((item) => {
                 const stockStatus = getStockStatus(item);
                 const available = getAvailableToOrder(item);
                 return (
                   <tr key={item.id} className="hover:bg-gray-50 transition-colors">
-                    <td className="px-6 py-4 font-medium text-gray-900">{item.name}</td>
+                    <td className="px-6 py-4 font-medium text-gray-900 flex items-center gap-2">
+                      <img src={"/coffee.png"} alt={item.name} className="size-14 object-contain" />
+                      <p>{item.name}</p>
+                    </td>
                     <td className="px-6 py-4">
                       <span className="capitalize px-2 py-1 bg-gray-100 rounded-md text-xs text-gray-600">
                         {item.category}
                       </span>
                     </td>
                     <td className="px-6 py-4 text-gray-500">{item.unit}</td>
-                    <td className="px-6 py-4 text-center font-semibold text-gray-900">{item.quantity}</td>
+                    <td className="px-6 py-4 text-center font-semibold text-gray-900">
+                      {item.quantity}</td>
                     <td className="px-6 py-4 text-center text-gray-500">{item.minQuantity}</td>
                     <td className="px-6 py-4 text-center text-gray-500">{item.maxQuantity}</td>
                     <td className="px-6 py-4 text-center font-bold text-main-green">{available}</td>
@@ -337,7 +388,7 @@ export default function RawMaterialsPage() {
                   </tr>
                 );
               })}
-              {filteredMaterials.length === 0 && (
+              {sortedMaterials.length === 0 && (
                 <tr>
                   <td colSpan={9} className="px-6 py-12 text-center text-gray-500">
                     No materials found matching your filters.
@@ -400,6 +451,60 @@ export default function RawMaterialsPage() {
                 <tr>
                   <td colSpan={7} className="px-6 py-8 text-center text-gray-500">
                     No requests found.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* Inventory Movement History Table */}
+      <div className="bg-white rounded-xl border border-main-green/20 shadow-sm overflow-hidden mt-8">
+        <div className="p-4 border-b border-main-green/10 bg-main-gold/5">
+          <h2 className="text-lg font-semibold text-main-green flex items-center gap-2">
+            <History className="w-5 h-5" />
+            Raw Materials History
+          </h2>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm text-left">
+            <thead className="bg-gray-50 text-gray-700 uppercase text-xs font-semibold">
+              <tr>
+                <th className="px-6 py-4">Date & Time</th>
+                <th className="px-6 py-4">Material</th>
+                <th className="px-6 py-4 text-center">Type</th>
+                <th className="px-6 py-4 text-center">Quantity</th>
+                <th className="px-6 py-4">Reason</th>
+                <th className="px-6 py-4">Performed By</th>
+                <th className="px-6 py-4">Notes</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-100">
+              {inventoryHistory.map((item) => (
+                <tr key={item.id} className="hover:bg-gray-50 transition-colors">
+                  <td className="px-6 py-4 text-gray-500">{item.date}</td>
+                  <td className="px-6 py-4 font-medium text-gray-900">{item.itemName}</td>
+                  <td className="px-6 py-4 text-center">
+                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${item.type === 'in'
+                      ? 'bg-green-100 text-green-800 border-green-200'
+                      : 'bg-red-100 text-red-800 border-red-200'
+                      }`}>
+                      {item.type === 'in' ? 'Restock (+)' : 'Usage (-)'}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 text-center font-semibold text-gray-900">
+                    {item.quantity}
+                  </td>
+                  <td className="px-6 py-4 text-gray-600">{item.reason}</td>
+                  <td className="px-6 py-4 text-gray-600">{item.performedBy}</td>
+                  <td className="px-6 py-4 text-gray-500 italic">{item.notes}</td>
+                </tr>
+              ))}
+              {inventoryHistory.length === 0 && (
+                <tr>
+                  <td colSpan={7} className="px-6 py-8 text-center text-gray-500">
+                    No history records found.
                   </td>
                 </tr>
               )}

@@ -1227,3 +1227,78 @@ export const pointsHistory = [
     notes: "Branch exceeded sales target",
   },
 ];
+// External Materials Data
+export const externalMaterialsData = [
+  // Packaging Materials
+  { id: 'EXT-001', name: 'Paper Cups - Small', category: 'packaging', unit: 'carton', currentQuantity: 15, maxQuantity: 50, availableToOrder: true },
+  { id: 'EXT-002', name: 'Paper Cups - Medium', category: 'packaging', unit: 'carton', currentQuantity: 8, maxQuantity: 50, availableToOrder: true },
+  { id: 'EXT-004', name: 'Cup Lids - Small', category: 'packaging', unit: 'carton', currentQuantity: 20, maxQuantity: 50, availableToOrder: false },
+
+  // Cleaning Materials
+  { id: 'EXT-011', name: 'Dishwashing Liquid', category: 'cleaning', unit: 'bottle', currentQuantity: 6, maxQuantity: 20, availableToOrder: false },
+  { id: 'EXT-012', name: 'Floor Cleaner', category: 'cleaning', unit: 'bottle', currentQuantity: 4, maxQuantity: 15, availableToOrder: false },
+  { id: 'EXT-013', name: 'Glass Cleaner', category: 'cleaning', unit: 'bottle', currentQuantity: 5, maxQuantity: 15, availableToOrder: true },
+
+  // Maintenance Materials
+  { id: 'EXT-019', name: 'LED Bulbs - Warm White', category: 'maintenance', unit: 'piece', currentQuantity: 4, maxQuantity: 15, availableToOrder: true },
+  { id: 'EXT-021', name: 'Power Cables', category: 'maintenance', unit: 'piece', currentQuantity: 2, maxQuantity: 10, availableToOrder: true },
+  { id: 'EXT-022', name: 'Extension Cords', category: 'maintenance', unit: 'piece', currentQuantity: 1, maxQuantity: 8, availableToOrder: true },
+  // Other Materials
+  { id: 'EXT-025', name: 'Hand Sanitizer', category: 'other', unit: 'bottle', currentQuantity: 8, maxQuantity: 25, availableToOrder: true },
+  { id: 'EXT-026', name: 'Paper Towels', category: 'other', unit: 'roll', currentQuantity: 12, maxQuantity: 40, availableToOrder: true },
+  { id: 'EXT-027', name: 'Toilet Paper', category: 'other', unit: 'roll', currentQuantity: 15, maxQuantity: 50, availableToOrder: false },
+];
+
+// External Materials History - Mock Data
+export const externalHistory = [
+  {
+    id: 1,
+    date: "2025-12-05 10:30",
+    itemName: "Paper Cups - Small",
+    type: "in",
+    quantity: 5,
+    reason: "Restock",
+    performedBy: "Store Manager",
+    notes: "Weekly replenishment"
+  },
+  {
+    id: 2,
+    date: "2025-12-04 14:15",
+    itemName: "Dishwashing Liquid",
+    type: "out",
+    quantity: 1,
+    reason: "Usage",
+    performedBy: "Kitchen Staff",
+    notes: "Empty bottle replacement"
+  },
+  {
+    id: 3,
+    date: "2025-12-03 09:00",
+    itemName: "Trash Bags - Large",
+    type: "in",
+    quantity: 10,
+    reason: "Restock",
+    performedBy: "Store Manager",
+    notes: "Monthly supply"
+  },
+  {
+    id: 4,
+    date: "2025-12-02 16:45",
+    itemName: "Paper Towels",
+    type: "out",
+    quantity: 2,
+    reason: "Usage",
+    performedBy: "Cleaning Staff",
+    notes: "Restroom supply"
+  },
+  {
+    id: 5,
+    date: "2025-12-01 11:20",
+    itemName: "Hand Sanitizer",
+    type: "in",
+    quantity: 5,
+    reason: "Restock",
+    performedBy: "Store Manager",
+    notes: "COVID safety measures"
+  }
+];

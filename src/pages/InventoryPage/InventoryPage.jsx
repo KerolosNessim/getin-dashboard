@@ -1,30 +1,13 @@
-import { useState, useMemo } from "react";
-import { inventory, inventoryHistory } from "@/data";
 import SectionHeader from "@/components/SctionHeader/SectionHeader";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  AlertTriangle,
-  Package,
-  TrendingDown,
-  TrendingUp,
-  Clock,
-  User,
-  Search,
-  Filter,
-  Edit,
-  Plus,
-  Minus
-} from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
-  DialogTitle,
-  DialogTrigger,
+  DialogTitle
 } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -32,6 +15,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { inventory } from "@/data";
+import {
+  Edit,
+  Package,
+  Search
+} from "lucide-react";
+import { useMemo, useState } from "react";
+import { RiArrowUpDownFill } from "react-icons/ri";
 
 export default function InventoryPage() {
   // Styling classes - الكلاسات الخاصة بالتنسيق
@@ -45,6 +36,8 @@ export default function InventoryPage() {
   const [editingItem, setEditingItem] = useState(null); // العنصر الذي يتم تعديله
   const [newQuantity, setNewQuantity] = useState(0); // الكمية الجديدة للتعديل
   const [isDialogOpen, setIsDialogOpen] = useState(false); // حالة فتح نافذة التعديل
+
+  const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' }); // إعدادات الترتيب
 
   // Categories للفلترة - الفئات لعمل تصفية
   const categories = [
@@ -93,10 +86,16 @@ export default function InventoryPage() {
       result = result.filter(item => {
         const status = getStockStatus(item);
         if (filterType === "low") {
-          return status.status === "low" || status.status === "warning";
+          return status.status === "low";
         }
         if (filterType === "critical") {
           return status.status === "critical";
+        }
+        if (filterType === "good") {
+          return status.status === "good";
+        }
+        if (filterType === "warning") {
+          return status.status === "warning";
         }
         return true;
       });
@@ -104,6 +103,54 @@ export default function InventoryPage() {
 
     return result;
   }, [inventoryData, searchQuery, selectedCategory, filterType]);
+
+
+  // حساب النسبة المئوية للمخزون - Calculate stock percentage for progress bar
+  const getStockPercentage = (item) => {
+    return Math.min((item.quantity / item.maxQuantity) * 100, 100);
+  };
+
+  // Handle Sorting - دالة التعامل مع الترتيب
+  const handleSort = (key) => {
+    let direction = 'asc';
+    if (sortConfig.key === key && sortConfig.direction === 'asc') {
+      direction = 'desc';
+    }
+    setSortConfig({ key, direction });
+  };
+
+
+
+  // Sorted Inventory - المخزون المرتب
+  const sortedInventory = useMemo(() => {
+    let sorted = [...filteredInventory];
+    if (sortConfig.key) {
+      sorted.sort((a, b) => {
+        // ترتيب حسب الاسم
+        if (sortConfig.key === 'name') {
+          return sortConfig.direction === 'asc'
+            ? a.name.localeCompare(b.name)
+            : b.name.localeCompare(a.name);
+        }
+        // ترتيب حسب مستوى المخزون (النسبة المئوية)
+        if (sortConfig.key === 'level') {
+          const LevelA = getStockPercentage(a);
+          const LevelB = getStockPercentage(b);
+          return sortConfig.direction === 'asc' ? LevelA - LevelB : LevelB - LevelA;
+        }
+        // ترتيب حسب الحالة (الأولوية للحالات الحرجة)
+        if (sortConfig.key === 'status') {
+          const statusOrder = { critical: 0, low: 1, warning: 2, good: 3 };
+          const statusA = statusOrder[getStockStatus(a).status] ?? 4;
+          const statusB = statusOrder[getStockStatus(b).status] ?? 4;
+          return sortConfig.direction === 'asc' ? statusA - statusB : statusB - statusA;
+        }
+        return 0;
+      });
+    }
+    return sorted;
+  }, [filteredInventory, sortConfig]);
+
 
 
 
@@ -127,165 +174,186 @@ export default function InventoryPage() {
     }
   };
 
-  // حساب النسبة المئوية للمخزون - Calculate stock percentage for progress bar
-  const getStockPercentage = (item) => {
-    return Math.min((item.quantity / item.maxQuantity) * 100, 100);
-  };
 
   return (
     <div className="pb-4">
       {/* العنوان الرئيسي - Main Header */}
       <SectionHeader title="Inventory Management" />
-        {/* محتوى تبويب المخزون - Inventory Tab Content */}
-        <div>
-          {/* Filters and Search - الفلاتر والبحث */}
-          <div className="rounded-lg border border-main-green border-l-4 p-4 mb-6">
-            <div className="flex items-center gap-2">
-              {/* شريط البحث - Search Bar */}
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-main-green/50 w-5 h-5" />
-                <Input
-                  type="text"
-                  placeholder="Search by name "
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10 border-main-green/30 focus:border-main-green"
-                />
-              </div>
-
-              {/* فلتر الفئة - Category Filter */}
-              <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                <SelectTrigger className="border-main-green/30">
-                  <SelectValue placeholder="Select Category" />
-                </SelectTrigger>
-                <SelectContent>
-                  {categories.map(cat => (
-                    <SelectItem key={cat.value} value={cat.value}>
-                      {cat.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-
-              {/* فلتر الحالة - Status Filter */}
-              <Select value={filterType} onValueChange={setFilterType}>
-                <SelectTrigger className="border-main-green/30">
-                  <SelectValue placeholder="Filter by Status" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Items</SelectItem>
-                  <SelectItem value="low">Low Stock</SelectItem>
-                  <SelectItem value="critical">Critical Stock</SelectItem>
-                </SelectContent>
-              </Select>
+      {/* محتوى تبويب المخزون - Inventory Tab Content */}
+      <div>
+        {/* Filters and Search - الفلاتر والبحث */}
+        <div className="rounded-lg border border-main-green border-l-4 p-4 mb-6">
+          <div className="flex items-center gap-2">
+            {/* شريط البحث - Search Bar */}
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-main-green/50 w-5 h-5" />
+              <Input
+                type="text"
+                placeholder="Search by name "
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10 border-main-green/30 focus:border-main-green"
+              />
             </div>
-          </div>
 
-          {/* جدول المخزون - Inventory Table */}
-          <div className="bg-white rounded-lg border border-main-green/20 overflow-hidden">
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead className="bg-main-green text-main-gold">
-                  <tr>
-                    <th className="px-4 py-3 text-left text-sm font-semibold">Item Name</th>
-                    <th className="px-4 py-3 text-left text-sm font-semibold">Category</th>
-                    <th className="px-4 py-3 text-left text-sm font-semibold">Quantity</th>
-                    <th className="px-4 py-3 text-left text-sm font-semibold">Stock Level</th>
-                    <th className="px-4 py-3 text-left text-sm font-semibold">Status</th>
-                    <th className="px-4 py-3 text-left text-sm font-semibold">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredInventory.length > 0 ? (
-                    filteredInventory.map((item, index) => {
-                      const status = getStockStatus(item);
-                      const percentage = getStockPercentage(item);
+            {/* فلتر الفئة - Category Filter */}
+            <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+              <SelectTrigger className="border-main-green/30">
+                <SelectValue placeholder="Select Category" />
+              </SelectTrigger>
+              <SelectContent>
+                {categories.map(cat => (
+                  <SelectItem key={cat.value} value={cat.value}>
+                    {cat.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
 
-                      return (
-                        <tr
-                          key={item.id}
-                          className={`border-b border-main-green/10 hover:bg-main-gold/10 transition-colors ${index % 2 === 0 ? 'bg-white' : 'bg-main-gold/5'
-                            }`}
-                        >
-                          {/* اسم العنصر - Item Name */}
-                          <td className="px-4 py-3">
-                            <div className="flex items-center gap-2">
-                              <span className="font-medium text-main-green">{item.name}</span>
-                            </div>
-                          </td>
-
-                          {/* الفئة - Category */}
-                          <td className="px-4 py-3">
-                            <span className="px-2 py-1 bg-main-gold/30 text-main-green text-xs rounded-full capitalize">
-                              {item.category}
-                            </span>
-                          </td>
-
-                          {/* الكمية - Quantity */}
-                          <td className="px-4 py-3">
-                            <span className="font-semibold text-main-green">
-                              {item.quantity} {item.unit}
-                            </span>
-                          </td>
-
-                          {/* مستوى المخزون - Stock Level Progress Bar */}
-                          <td className="px-4 py-3">
-                            <div className="w-32">
-                              <div className=" text-xs mb-1">
-    
-                                <span className="text-main-green/70">
-                                  {percentage.toFixed(0)}%
-                                </span>
-                              </div>
-                              <div className="w-full bg-gray-200 rounded-full h-2">
-                                <div
-                                  className={`h-2 rounded-full transition-all ${percentage < 50 ? 'bg-red-500' :
-                                      percentage < 75 ? 'bg-orange-500' :
-                                        'bg-green-500'
-                                    }`}
-                                  style={{ width: `${percentage}%` }}
-                                />
-                              </div>
-                            </div>
-                          </td>
-
-                          {/* الحالة - Status Badge */}
-                          <td className="px-4 py-3">
-                            <span className={`px-3 py-1 rounded-full text-xs font-medium ${status.color}`}>
-                              {status.label}
-                            </span>
-                          </td>
-
-                          {/* الإجراءات - Actions */}
-                          <td className="px-4 py-3">
-                            <Button
-                              size="sm"
-                              onClick={() => handleEditClick(item)}
-                              className="bg-main-green hover:bg-main-green/90 text-main-gold"
-                            >
-                              <Edit className="w-4 h-4 mr-1" />
-                              Edit
-                            </Button>
-                          </td>
-                        </tr>
-                      );
-                    })
-                  ) : (
-                    // رسالة عدم وجود نتائج - No Results Message
-                    <tr>
-                      <td colSpan="8" className="px-4 py-8 text-center">
-                        <div className="flex flex-col items-center gap-2">
-                          <Package className="w-12 h-12 text-main-green/30" />
-                          <p className="text-main-green/70 font-medium">No items found</p>
-                        </div>
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
+            {/* فلتر الحالة - Status Filter */}
+            <Select value={filterType} onValueChange={setFilterType}>
+              <SelectTrigger className="border-main-green/30">
+                <SelectValue placeholder="Filter by Status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All status</SelectItem>
+                <SelectItem value="low">Low Stock</SelectItem>
+                <SelectItem value="critical">Critical Stock</SelectItem>
+                <SelectItem value="good">Good Stock</SelectItem>
+                <SelectItem value="warning">Warning Stock</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
         </div>
+
+        {/* جدول المخزون - Inventory Table */}
+        <div className="bg-white rounded-lg border border-main-green/20 overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead className="bg-main-green text-main-gold">
+                <tr>
+                  <th
+                    className="px-4 py-3 text-left text-sm font-semibold cursor-pointer hover:bg-main-green/20 transition-colors"
+                    onClick={() => handleSort('name')}
+                  >
+                    <div className="flex items-center gap-2">
+                      Item Name <RiArrowUpDownFill  />
+                    </div>
+                  </th>
+                  <th className="px-4 py-3 text-left text-sm font-semibold">
+                    Category
+                  </th>
+                  <th className="px-4 py-3 text-left text-sm font-semibold">Quantity</th>
+                  <th
+                    className="px-4 py-3 text-left text-sm font-semibold cursor-pointer hover:bg-main-green/20 transition-colors"
+                    onClick={() => handleSort('level')}
+                  >
+                    <div className="flex items-center gap-2">
+                      Stock Level <RiArrowUpDownFill />
+                    </div>
+                  </th>
+                  <th
+                    className="px-4 py-3 text-left text-sm font-semibold cursor-pointer hover:bg-main-green/20 transition-colors"
+                    onClick={() => handleSort('status')}
+                  >
+                    <div className="flex items-center gap-2">
+                      Status <RiArrowUpDownFill />
+                    </div>
+                  </th>
+                  <th className="px-4 py-3 text-left text-sm font-semibold">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {sortedInventory.length > 0 ? (
+                  sortedInventory.map((item, index) => {
+                    const status = getStockStatus(item);
+                    const percentage = getStockPercentage(item);
+
+                    return (
+                      <tr
+                        key={item.id}
+                        className={`border-b border-main-green/10 hover:bg-main-gold/10 transition-colors ${index % 2 === 0 ? 'bg-white' : 'bg-main-gold/5'
+                          }`}
+                      >
+                        {/* اسم العنصر - Item Name */}
+                        <td className="px-4 py-3">
+                          <div className="flex items-center gap-2">
+                            <span className="font-medium text-main-green">{item.name}</span>
+                          </div>
+                        </td>
+
+                        {/* الفئة - Category */}
+                        <td className="px-4 py-3">
+                          <span className="px-2 py-1 bg-main-gold/30 text-main-green text-xs rounded-full capitalize">
+                            {item.category}
+                          </span>
+                        </td>
+
+                        {/* الكمية - Quantity */}
+                        <td className="px-4 py-3">
+                          <span className="font-semibold text-main-green">
+                            {item.quantity} {item.unit}
+                          </span>
+                        </td>
+
+                        {/* مستوى المخزون - Stock Level Progress Bar */}
+                        <td className="px-4 py-3">
+                          <div className="w-32">
+                            <div className=" text-xs mb-1">
+
+                              <span className="text-main-green/70">
+                                {percentage.toFixed(0)}%
+                              </span>
+                            </div>
+                            <div className="w-full bg-gray-200 rounded-full h-2">
+                              <div
+                                className={`h-2 rounded-full transition-all ${percentage < 50 ? 'bg-red-500' :
+                                  percentage < 75 ? 'bg-orange-500' :
+                                    'bg-green-500'
+                                  }`}
+                                style={{ width: `${percentage}%` }}
+                              />
+                            </div>
+                          </div>
+                        </td>
+
+                        {/* الحالة - Status Badge */}
+                        <td className="px-4 py-3">
+                          <span className={`px-3 py-1 rounded-full text-xs font-medium ${status.color}`}>
+                            {status.label}
+                          </span>
+                        </td>
+
+                        {/* الإجراءات - Actions */}
+                        <td className="px-4 py-3">
+                          <Button
+                            size="sm"
+                            onClick={() => handleEditClick(item)}
+                            className="bg-main-green hover:bg-main-green/90 text-main-gold"
+                          >
+                            <Edit className="w-4 h-4 mr-1" />
+                            Edit
+                          </Button>
+                        </td>
+                      </tr>
+                    );
+                  })
+                ) : (
+                  // رسالة عدم وجود نتائج - No Results Message
+                  <tr>
+                    <td colSpan="8" className="px-4 py-8 text-center">
+                      <div className="flex flex-col items-center gap-2">
+                        <Package className="w-12 h-12 text-main-green/30" />
+                        <p className="text-main-green/70 font-medium">No items found</p>
+                      </div>
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
 
       {/* نافذة التعديل - Edit Dialog */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>

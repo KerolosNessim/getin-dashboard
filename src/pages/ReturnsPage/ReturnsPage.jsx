@@ -82,7 +82,7 @@ export default function ReturnsPage() {
       requestDate: new Date().toISOString().slice(0, 16).replace("T", " "),
       approvedBy: null,
       approvalDate: null,
-      refundAmount: 0, // Would be calculated based on price
+      refundAmount: 0, 
       notes: newNotes,
       images: [],
     };
@@ -361,7 +361,7 @@ export default function ReturnsPage() {
                 {selectedReturn.refundAmount > 0 && (
                   <div className="flex justify-between border-b pb-2">
                     <span className="text-gray-600">Refund Amount</span>
-                    <span className="font-medium text-green-600">{selectedReturn.refundAmount} EGP</span>
+                    <span className="font-medium text-green-600">{selectedReturn.refundAmount} ₺</span>
                   </div>
                 )}
               </div>

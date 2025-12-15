@@ -12,7 +12,9 @@ import {
   History,
   Send,
   ShoppingCart,
-  XCircle
+
+  XCircle,
+  ArrowUpDown // Add sorting icon
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -34,53 +36,16 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
+import { externalHistory, externalMaterialsData } from '@/data';
 
-// External Materials Data
-const externalMaterialsData = [
-  // Packaging Materials
-  { id: 'EXT-001', name: 'Paper Cups - Small', category: 'packaging', unit: 'carton', currentQuantity: 15, maxQuantity: 50, availableToOrder: true },
-  { id: 'EXT-002', name: 'Paper Cups - Medium', category: 'packaging', unit: 'carton', currentQuantity: 8, maxQuantity: 50, availableToOrder: true },
-  { id: 'EXT-003', name: 'Paper Cups - Large', category: 'packaging', unit: 'carton', currentQuantity: 12, maxQuantity: 50, availableToOrder: true },
-  { id: 'EXT-004', name: 'Cup Lids - Small', category: 'packaging', unit: 'carton', currentQuantity: 20, maxQuantity: 50, availableToOrder: true },
-  { id: 'EXT-005', name: 'Cup Lids - Medium', category: 'packaging', unit: 'carton', currentQuantity: 18, maxQuantity: 50, availableToOrder: true },
-  { id: 'EXT-006', name: 'Cup Lids - Large', category: 'packaging', unit: 'carton', currentQuantity: 22, maxQuantity: 50, availableToOrder: true },
-  { id: 'EXT-007', name: 'Paper Bags - Small', category: 'packaging', unit: 'roll', currentQuantity: 5, maxQuantity: 30, availableToOrder: true },
-  { id: 'EXT-008', name: 'Paper Bags - Large', category: 'packaging', unit: 'roll', currentQuantity: 3, maxQuantity: 30, availableToOrder: true },
-  { id: 'EXT-009', name: 'Plastic Straws', category: 'packaging', unit: 'carton', currentQuantity: 10, maxQuantity: 40, availableToOrder: true },
-  { id: 'EXT-010', name: 'Napkins', category: 'packaging', unit: 'carton', currentQuantity: 25, maxQuantity: 60, availableToOrder: true },
 
-  // Cleaning Materials
-  { id: 'EXT-011', name: 'Dishwashing Liquid', category: 'cleaning', unit: 'bottle', currentQuantity: 6, maxQuantity: 20, availableToOrder: true },
-  { id: 'EXT-012', name: 'Floor Cleaner', category: 'cleaning', unit: 'bottle', currentQuantity: 4, maxQuantity: 15, availableToOrder: true },
-  { id: 'EXT-013', name: 'Glass Cleaner', category: 'cleaning', unit: 'bottle', currentQuantity: 5, maxQuantity: 15, availableToOrder: true },
-  { id: 'EXT-014', name: 'Sponges', category: 'cleaning', unit: 'pack', currentQuantity: 8, maxQuantity: 25, availableToOrder: true },
-  { id: 'EXT-015', name: 'Microfiber Cloths', category: 'cleaning', unit: 'pack', currentQuantity: 10, maxQuantity: 30, availableToOrder: true },
-  { id: 'EXT-016', name: 'Trash Bags - Small', category: 'cleaning', unit: 'roll', currentQuantity: 7, maxQuantity: 20, availableToOrder: true },
-  { id: 'EXT-017', name: 'Trash Bags - Large', category: 'cleaning', unit: 'roll', currentQuantity: 5, maxQuantity: 20, availableToOrder: true },
-  { id: 'EXT-018', name: 'Mop Heads', category: 'cleaning', unit: 'piece', currentQuantity: 3, maxQuantity: 10, availableToOrder: true },
-
-  // Maintenance Materials
-  { id: 'EXT-019', name: 'LED Bulbs - Warm White', category: 'maintenance', unit: 'piece', currentQuantity: 4, maxQuantity: 15, availableToOrder: true },
-  { id: 'EXT-020', name: 'LED Bulbs - Cool White', category: 'maintenance', unit: 'piece', currentQuantity: 3, maxQuantity: 15, availableToOrder: true },
-  { id: 'EXT-021', name: 'Power Cables', category: 'maintenance', unit: 'piece', currentQuantity: 2, maxQuantity: 10, availableToOrder: true },
-  { id: 'EXT-022', name: 'Extension Cords', category: 'maintenance', unit: 'piece', currentQuantity: 1, maxQuantity: 8, availableToOrder: true },
-  { id: 'EXT-023', name: 'Electrical Plugs', category: 'maintenance', unit: 'piece', currentQuantity: 5, maxQuantity: 20, availableToOrder: true },
-  { id: 'EXT-024', name: 'Fuses', category: 'maintenance', unit: 'pack', currentQuantity: 2, maxQuantity: 10, availableToOrder: true },
-
-  // Other Materials
-  { id: 'EXT-025', name: 'Hand Sanitizer', category: 'other', unit: 'bottle', currentQuantity: 8, maxQuantity: 25, availableToOrder: true },
-  { id: 'EXT-026', name: 'Paper Towels', category: 'other', unit: 'roll', currentQuantity: 12, maxQuantity: 40, availableToOrder: true },
-  { id: 'EXT-027', name: 'Toilet Paper', category: 'other', unit: 'roll', currentQuantity: 15, maxQuantity: 50, availableToOrder: true },
-  { id: 'EXT-028', name: 'Air Freshener', category: 'other', unit: 'bottle', currentQuantity: 3, maxQuantity: 12, availableToOrder: true },
-  { id: 'EXT-029', name: 'Batteries - AA', category: 'other', unit: 'pack', currentQuantity: 4, maxQuantity: 15, availableToOrder: true },
-  { id: 'EXT-030', name: 'Batteries - AAA', category: 'other', unit: 'pack', currentQuantity: 3, maxQuantity: 15, availableToOrder: true },
-];
 
 export default function ExternalMaterialsPage() {
   // State
   const [materials, setMaterials] = useState(externalMaterialsData);
   const [searchQuery, setSearchQuery] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('all');
+  const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' }); // Sort config
 
   // Order Dialog State
   const [isOrderDialogOpen, setIsOrderDialogOpen] = useState(false);
@@ -133,6 +98,29 @@ export default function ExternalMaterialsPage() {
       return matchesSearch && matchesCategory;
     });
   }, [materials, searchQuery, categoryFilter]);
+
+  // Sorting Logic - منطق الترتيب
+  const sortedMaterials = useMemo(() => {
+    let sorted = [...filteredMaterials];
+    if (sortConfig.key) {
+      sorted.sort((a, b) => {
+        if (sortConfig.key === 'name') {
+          return sortConfig.direction === 'asc'
+            ? a.name.localeCompare(b.name)
+            : b.name.localeCompare(a.name);
+        }
+        if (sortConfig.key === 'status') {
+          // Sort by availableToOrder (true > false) or vice versa
+          // true = 1, false = 0
+          const statusA = a.availableToOrder ? 1 : 0;
+          const statusB = b.availableToOrder ? 1 : 0;
+          return sortConfig.direction === 'asc' ? statusA - statusB : statusB - statusA;
+        }
+        return 0;
+      });
+    }
+    return sorted;
+  }, [filteredMaterials, sortConfig]);
 
   // Categories for filter
   const categories = [
@@ -221,6 +209,15 @@ export default function ExternalMaterialsPage() {
     toast.error('Request rejected');
   };
 
+  // Handle Sort - دالة الترتيب
+  const handleSort = (key) => {
+    let direction = 'asc';
+    if (sortConfig.key === key && sortConfig.direction === 'asc') {
+      direction = 'desc';
+    }
+    setSortConfig({ key, direction });
+  };
+
   // Handle Deliver Request
   const handleDeliverRequest = () => {
     if (!selectedRequest) return;
@@ -289,21 +286,37 @@ export default function ExternalMaterialsPage() {
           <table className="w-full text-sm text-left">
             <thead className="bg-main-green text-main-gold uppercase text-xs font-semibold">
               <tr>
-                <th className="px-6 py-4">Material Name</th>
+                <th
+                  className="px-6 py-4 cursor-pointer hover:bg-main-green/90 transition-colors"
+                  onClick={() => handleSort('name')}
+                >
+                  <div className="flex items-center gap-2">
+                    Material Name <ArrowUpDown className="w-4 h-4" />
+                  </div>
+                </th>
                 <th className="px-6 py-4">Category</th>
                 <th className="px-6 py-4">Unit</th>
                 <th className="px-6 py-4 text-center">Current Qty</th>
                 <th className="px-6 py-4 text-center">Max Limit</th>
-                <th className="px-6 py-4 text-center">Available to Order</th>
+                <th
+                  className="px-6 py-4 text-center cursor-pointer hover:bg-main-green/90 transition-colors"
+                  onClick={() => handleSort('status')}
+                >
+                  <div className="flex items-center justify-center gap-2">
+                    Available to Order <ArrowUpDown className="w-4 h-4" />
+                  </div>
+                </th>
                 <th className="px-6 py-4 text-center">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
-              {filteredMaterials.map((item) => {
+              {sortedMaterials.map((item) => {
                 const available = item.availableToOrder ? 'Yes' : 'No';
                 return (
                   <tr key={item.id} className="hover:bg-gray-50 transition-colors">
-                    <td className="px-6 py-4 font-medium text-gray-900">{item.name}</td>
+                    <td className="px-6 py-4 font-medium text-gray-900 flex items-center gap-2">
+                      <img src={"/coffee.png"} alt={item.name} className="w-12 h-12 object-contain" />
+                      <p>{item.name}</p></td>
                     <td className="px-6 py-4">
                       <span className="capitalize px-2 py-1 bg-gray-100 rounded-md text-xs text-gray-600">
                         {item.category}
@@ -338,7 +351,7 @@ export default function ExternalMaterialsPage() {
                   </tr>
                 );
               })}
-              {filteredMaterials.length === 0 && (
+              {sortedMaterials.length === 0 && (
                 <tr>
                   <td colSpan={7} className="px-6 py-12 text-center text-gray-500">
                     No materials found matching your filters.
@@ -409,6 +422,53 @@ export default function ExternalMaterialsPage() {
                   </td>
                 </tr>
               )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* Inventory Movement History Table */}
+      <div className="bg-white rounded-xl border border-main-green/20 shadow-sm overflow-hidden mt-8">
+        <div className="p-4 border-b border-main-green/10 bg-main-gold/5">
+          <h2 className="text-lg font-semibold text-main-green flex items-center gap-2">
+            <History className="w-5 h-5" />
+            External Materials History
+          </h2>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm text-left">
+            <thead className="bg-gray-50 text-gray-700 uppercase text-xs font-semibold">
+              <tr>
+                <th className="px-6 py-4">Date & Time</th>
+                <th className="px-6 py-4">Material</th>
+                <th className="px-6 py-4 text-center">Type</th>
+                <th className="px-6 py-4 text-center">Quantity</th>
+                <th className="px-6 py-4">Reason</th>
+                <th className="px-6 py-4">Performed By</th>
+                <th className="px-6 py-4">Notes</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-100">
+              {externalHistory.map((item) => (
+                <tr key={item.id} className="hover:bg-gray-50 transition-colors">
+                  <td className="px-6 py-4 text-gray-500">{item.date}</td>
+                  <td className="px-6 py-4 font-medium text-gray-900">{item.itemName}</td>
+                  <td className="px-6 py-4 text-center">
+                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${item.type === 'in'
+                      ? 'bg-green-100 text-green-800 border-green-200'
+                      : 'bg-red-100 text-red-800 border-red-200'
+                      }`}>
+                      {item.type === 'in' ? 'Restock (+)' : 'Usage (-)'}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 text-center font-semibold text-gray-900">
+                    {item.quantity}
+                  </td>
+                  <td className="px-6 py-4 text-gray-600">{item.reason}</td>
+                  <td className="px-6 py-4 text-gray-600">{item.performedBy}</td>
+                  <td className="px-6 py-4 text-gray-500 italic">{item.notes}</td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
