@@ -14,7 +14,9 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
-import { Lock, Mail } from "lucide-react";
+import { Loader2, Lock, Mail } from "lucide-react";
+import { login } from "@/api/login";
+import { useUserStore } from "../../stores/UserStore";
 
 // Validation Schema
 const loginSchema = z.object({
@@ -24,6 +26,7 @@ const loginSchema = z.object({
 
 export default function LoginPage() {
   const navigate = useNavigate();
+  const { setUser } = useUserStore();
 
   // Initialize form
   const form = useForm({
@@ -34,15 +37,22 @@ export default function LoginPage() {
     },
   });
 
-  // Handle form submission
-  const onSubmit = (data) => {
+  const {isSubmitting} = form.formState;
 
-    // Simulate login (replace with actual API call)
-    if (data.email && data.password) {
-      toast.success("Login successful!");
-      navigate("/"); // Navigate to home page
-    } else {
-      toast.error("Invalid credentials");
+  // Handle form submission
+  const onSubmit = async (data) => {
+    try {
+      const res = await login(data);
+      setUser(res?.data);
+      navigate("/");
+      toast.success(res?.message);
+    } catch (error) {
+      if (error?.response?.status === 401) {
+        toast.error(error?.response?.data?.message);
+      }
+      else {
+        toast.error("Something went wrong");
+      }
     }
   };
 
@@ -109,7 +119,7 @@ export default function LoginPage() {
               />
 
               {/* Forgot Password Link */}
-              <div className="flex justify-end">
+              {/* <div className="flex justify-end">
                 <button
                   type="button"
                   className="text-sm text-main-green hover:underline font-medium"
@@ -117,14 +127,15 @@ export default function LoginPage() {
                 >
                   Forgot password?
                 </button>
-              </div>
+              </div> */}
 
               {/* Submit Button */}
               <Button
+                disabled={isSubmitting}
                 type="submit"
                 className="w-full h-12 bg-main-green hover:bg-main-green/90 text-main-gold font-semibold text-lg shadow-lg"
               >
-               Login
+                {isSubmitting ? <Loader2 className="animate-spin"/> : "Login"}
               </Button>
             </form>
           </Form>

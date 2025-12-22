@@ -17,6 +17,8 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { HistoryTable } from "../HistoryTable/HistoryTable";
+import { ArrowUpDown } from "lucide-react";
 
 const RawMaterialsCheck = () => {
   const [selectedItem, setSelectedItem] = useState(null);
@@ -58,6 +60,128 @@ const RawMaterialsCheck = () => {
     setSelectedItem(null);
   };
 
+
+
+  const tableData = materials.map((mat) => {
+    const result = checks[mat.id];
+    return {
+      ...mat,
+      actual: result ? result.actual : "-",
+      diff: result ? result.diff : "-",
+      status: result ? result.status : "-",
+    };
+  });
+
+  const columns = [
+    {
+      accessorKey: 'name',
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="text-left hover:bg-transparent hover:text-main-gold"
+          >
+            Material
+            <ArrowUpDown className="h-4 w-4" />
+          </Button>
+        )
+      },
+      cell: ({ row }) => <span className="font-bold text-main-green">{row.original.name}</span>,
+    },
+    {
+      accessorKey: 'expected',
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="text-left hover:bg-transparent hover:text-main-gold"
+          >
+            Expected Qty
+            <ArrowUpDown className="h-4 w-4" />
+          </Button>
+        )
+      },
+      cell: ({ row }) => <span className="font-bold text-main-green">{row.original.expected}</span>,
+    },
+    {
+      accessorKey: 'actual',
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="text-left hover:bg-transparent hover:text-main-gold"
+          >
+            Actual Qty
+            <ArrowUpDown className="h-4 w-4" />
+          </Button>
+        )
+      },
+      cell: ({ row }) => <span className="font-bold text-main-green">{row.original.actual}</span>,
+    },
+    {
+      accessorKey: 'diff',
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="text-left hover:bg-transparent hover:text-main-gold"
+          >
+            Difference
+            <ArrowUpDown className="h-4 w-4" />
+          </Button>
+        )
+      },
+      cell: ({ row }) => <span className="font-bold text-main-green">{row.original.diff}</span>,
+    },
+    {
+      accessorKey: 'status',
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="text-left hover:bg-transparent hover:text-main-gold"
+          >
+            Status
+            <ArrowUpDown className="h-4 w-4" />
+          </Button>
+        )
+      },
+      cell: ({ row }) => {
+        const status = row.original.status;
+        if (status === "ok") return <span className="text-green-600">OK</span>;
+        if (status === "problem") return <span className="text-red-600">Problem</span>;
+        return <span>-</span>;
+      },
+    },
+    {
+      accessorKey: 'action',
+      header: "Action",
+      cell: ({ row }) => {
+        const mat = row.original;
+
+        return (
+          <Button
+            onClick={() => {
+              setSelectedItem(mat);
+              setActualQty("");
+              setError("");
+            }}
+            className="bg-main-green text-main-gold hover:bg-main-green/80"
+          >
+            Check
+          </Button>
+        )
+      }
+    }
+  ]
+
+
+
   return (
     <div className="space-y-6">
 
@@ -69,121 +193,59 @@ const RawMaterialsCheck = () => {
         </CardHeader>
 
         <CardContent>
-          <table className="w-full text-left">
-            <thead className="bg-main-green text-main-gold font-semibold">
-              <tr>
-                <th className="p-2">Material</th>
-                <th className="p-2">Expected Qty</th>
-                <th className="p-2">Actual Qty</th>
-                <th className="p-2">Difference</th>
-                <th className="p-2">Status</th>
-                <th className="p-2"></th>
-              </tr>
-            </thead>
+          <HistoryTable data={tableData} columns={columns} />
 
-            <tbody className="text-main-green font-semibold">
-              {materials.map((mat) => {
-                const result = checks[mat.id];
+          <Dialog open={!!selectedItem} onOpenChange={(open) => !open && setSelectedItem(null)}>
+            <DialogContent className="bg-white">
+              <DialogHeader>
+                <DialogHeading>Enter Actual Quantity</DialogHeading>
+              </DialogHeader>
 
-                return (
-                  <tr
-                    key={mat.id}
-                    className="border-b border-main-green/20 hover:bg-main-green/10 transition"
-                  >
-                    <td className="p-2">{mat.name}</td>
-                    <td className="p-2">{mat.expected} kg</td>
+              {selectedItem && (
+                <div className="space-y-2 py-2">
+                  <p className="text-main-green font-semibold">
+                    Material: {selectedItem.name}
+                  </p>
 
-                    <td className="p-2">
-                      {result ? result.actual + " kg" : "-"}
-                    </td>
+                  <p className="text-main-green">
+                    Expected: {selectedItem.expected} kg
+                  </p>
 
-                    <td className="p-2">
-                      {result ? result.diff + " kg" : "-"}
-                    </td>
+                  <Input
+                    type="number"
+                    placeholder="Enter actual quantity..."
+                    value={actualQty}
+                    onChange={(e) => {
+                      setActualQty(e.target.value)
+                      setError("")
+                    }}
+                  />
 
-                    <td className="p-2">
-                      {result ? (
-                        result.status === "ok" ? (
-                          <span className="text-green-600">OK</span>
-                        ) : (
-                          <span className="text-red-600">Problem</span>
-                        )
-                      ) : (
-                        "-"
-                      )}
-                    </td>
+                  {actualQty && (
+                    <p className="text-main-green font-semibold">
+                      Difference:{" "}
+                      {selectedItem.expected - Number(actualQty)} kg
+                    </p>
+                  )}
 
-                    <td className="p-2">
-                      <Dialog>
-                        <DialogTrigger asChild>
-                          <Button
-                            onClick={() => {
-                              setSelectedItem(mat);
-                              setActualQty("");
-                              setError("");
-                            }}
-                            className="bg-main-green text-main-gold hover:bg-main-green/80"
-                          >
-                            Check
-                          </Button>
-                        </DialogTrigger>
+                  {error && (
+                    <div className="text-red-600 bg-red-100 p-2 rounded-md text-sm">
+                      {error}
+                    </div>
+                  )}
+                </div>
+              )}
 
-                        {selectedItem?.id === mat.id && (
-                          <DialogContent className="bg-white">
-                            <DialogHeader>
-                              <DialogHeading>Enter Actual Quantity</DialogHeading>
-                            </DialogHeader>
-
-                            <div className="space-y-2 py-2">
-                              <p className="text-main-green font-semibold">
-                                Material: {selectedItem.name}
-                              </p>
-
-                              <p className="text-main-green">
-                                Expected: {selectedItem.expected} kg
-                              </p>
-
-                              <Input
-                                type="number"
-                                placeholder="Enter actual quantity..."
-                                value={actualQty}
-                                onChange={(e) => {
-                                  setActualQty(e.target.value)
-                                  setError("")
-                                }}
-                              />
-
-                              {actualQty && (
-                                <p className="text-main-green font-semibold">
-                                  Difference:{" "}
-                                  {selectedItem.expected - Number(actualQty)} kg
-                                </p>
-                              )}
-
-                              {error && (
-                                <div className="text-red-600 bg-red-100 p-2 rounded-md text-sm">
-                                  {error}
-                                </div>
-                              )}
-                            </div>
-
-                            <DialogFooter>
-                              <Button
-                                onClick={handleSave}
-                                className="bg-main-green hover:bg-main-green/90"
-                              >
-                                Save
-                              </Button>
-                            </DialogFooter>
-                          </DialogContent>
-                        )}
-                      </Dialog>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+              <DialogFooter>
+                <Button
+                  onClick={handleSave}
+                  className="bg-main-green hover:bg-main-green/90"
+                >
+                  Save
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
         </CardContent>
       </Card>
 

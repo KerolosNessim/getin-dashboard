@@ -15,20 +15,23 @@ import {
 import { IoMdPower, IoMdWarning } from 'react-icons/io';
 import { MdCurrencyExchange } from 'react-icons/md';
 import { Link, NavLink, useNavigate, useLocation } from 'react-router-dom';
+import { useUserStore } from '@/stores/UserStore';
+import { toast } from 'sonner';
 
 const SideBar = () => {
-  const navigate = useNavigate();
   const location = useLocation();
+  const { logout } = useUserStore();
 
   const handleLogout = () => {
-    navigate('/login');
+    logout();
+    toast.success("logged out successfully");
   };
 
   const menuItems = [
     { icon: <FaBox size={24} />, label: 'Products', path: '/' },
     { icon: <FaClipboardList size={24} />, label: 'Orders', path: '/orders' },
     { icon: <MdCurrencyExchange size={24} />, label: 'Reports', path: '/reports' },
-    { icon: <FaWarehouse size={24} />, label: 'Inventory', path: '/inventory' },
+    // { icon: <FaWarehouse size={24} />, label: 'Inventory', path: '/inventory' },
     { icon: <IoMdWarning size={24} />, label: 'Discarding', path: '/returns' },
     { icon: <FaStar size={24} />, label: 'Loyalty', path: '/loyalty' },
     { icon: <FaFlask size={24} />, label: 'Raw Materials', path: '/raw-materials' },
@@ -44,7 +47,7 @@ const SideBar = () => {
   ];
 
   return (
-    <aside className='shrink-0 w-fit h-screen bg-main-gold/30 shadow-md flex flex-col items-center py-4 px-2 space-y-5 '>
+    <aside className='shrink-0 w-fit h-screen   sticky top-0 start-0  bg-main-gold/30 shadow-md flex flex-col items-center py-4 px-2 space-y-5 '>
       <Link to="/" className='w-16 h-16 overflow-hidden rounded-lg flex items-center justify-center text-white font-bold text-xl'>
         <img src="/logo.jpg" alt="logo" className='w-full h-full object-cover' />
       </Link>

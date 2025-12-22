@@ -10,7 +10,8 @@ import {
   History,
   User,
   Calendar,
-  CheckCircle
+  CheckCircle,
+  ArrowUpDown
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -31,66 +32,107 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Progress } from "@/components/ui/progress";
+import { HistoryTable } from "@/components/HistoryTable/HistoryTable";
+import AddPointsDialog from "@/components/Loyalty/AddPointsDialog";
 
 export default function LoyaltyPage() {
   // State
-  const [employeesData, setEmployeesData] = useState(employees);
-  const [historyData, setHistoryData] = useState(pointsHistory);
+  const [employeesData, setEmployeesData] = useState(
+    employees
+  );
+  const [historyData, setHistoryData] = useState(
+    pointsHistory
+  );
   const [isAddPointsOpen, setIsAddPointsOpen] = useState(false);
-
-  // New Points Form State
-  const [selectedEmployeeId, setSelectedEmployeeId] = useState("");
-  const [pointsAmount, setPointsAmount] = useState("");
-  const [pointsReason, setPointsReason] = useState("");
-  const [pointsNotes, setPointsNotes] = useState("");
-
-  // Sort employees by points (descending)
   const sortedEmployees = useMemo(() => {
     return [...employeesData].sort((a, b) => b.points - a.points);
   }, [employeesData]);
 
   // Top 3 Employees
   const topEmployees = sortedEmployees.slice(0, 3);
-  const otherEmployees = sortedEmployees.slice(3);
 
-  // Handle Add Points
-  const handleAddPoints = () => {
-    if (!selectedEmployeeId || !pointsAmount || !pointsReason) return;
 
-    const employee = employeesData.find(e => e.id.toString() === selectedEmployeeId);
-    if (!employee) return;
+  const columns = [
+    {
+      accessorKey: "name",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="text-left hover:bg-transparent hover:text-main-gold"
+          >
+            Employee
+            <ArrowUpDown className="h-4 w-4" />
+          </Button>
+        )
+      },
 
-    const points = parseInt(pointsAmount);
+    },
+    {
+      accessorKey: "role",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="text-left hover:bg-transparent hover:text-main-gold"
+          >
+            Role
+            <ArrowUpDown className="h-4 w-4" />
+          </Button>
+        )
+      },
 
-    // Update Employee Points
-    const updatedEmployees = employeesData.map(emp => {
-      if (emp.id === employee.id) {
-        return { ...emp, points: emp.points + points };
-      }
-      return emp;
-    });
-    setEmployeesData(updatedEmployees);
+    },
+    {
+      accessorKey: "points",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="text-left hover:bg-transparent hover:text-main-gold"
+          >
+            Points
+            <ArrowUpDown className="h-4 w-4" />
+          </Button>
+        )
+      },
 
-    // Add to History
-    const newHistoryItem = {
-      id: historyData.length + 1,
-      employeeId: employee.id,
-      employeeName: employee.name,
-      points: points,
-      reason: pointsReason,
-      type: "manual",
-      date: new Date().toISOString().slice(0, 16).replace("T", " "),
-      notes: pointsNotes,
-    };
-    setHistoryData([newHistoryItem, ...historyData]);
+    },
+    {
+      accessorKey: "completedOrders",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="text-left hover:bg-transparent hover:text-main-gold"
+          >
+            Performance
+            <ArrowUpDown className="h-4 w-4" />
+          </Button>
+        )
+      },
+      cell: (row) => {
+        const result = row.getValue("completedOrders");
+        const progress = (result / 200) * 100;
+        return (
+          <div className="w-full max-w-[120px]">
+            <div className="flex justify-between text-xs mb-1">
+              <span>Orders</span>
+              <span>{progress}</span>
+            </div>
+            <Progress value={progress} className="h-1.5" />
+          </div>
+        )
+      },
 
-    // Reset and Close
-    setIsAddPointsOpen(false);
-    setSelectedEmployeeId("");
-    setPointsAmount("");
-    setPointsReason("");
-    setPointsNotes("");
-  };
+    },
+  ];
+
+
 
   return (
     <div className="pb-8 space-y-8">
@@ -160,123 +202,10 @@ export default function LoyaltyPage() {
             Add Points
           </Button>
         </div>
-
-        <div className="bg-white rounded-lg border border-main-green/20 overflow-hidden shadow-sm">
-          <table className="w-full">
-            <thead className="bg-main-green text-main-gold">
-              <tr>
-                <th className="px-4 py-3 text-left text-sm font-semibold">Rank</th>
-                <th className="px-4 py-3 text-left text-sm font-semibold">Employee</th>
-                <th className="px-4 py-3 text-left text-sm font-semibold">Role</th>
-                <th className="px-4 py-3 text-left text-sm font-semibold">Points</th>
-                <th className="px-4 py-3 text-left text-sm font-semibold">Performance</th>
-              </tr>
-            </thead>
-            <tbody>
-              {sortedEmployees.map((emp, index) => (
-                <tr
-                  key={emp.id}
-                  className={`border-b border-main-green/10 hover:bg-main-gold/5 transition-colors ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50/50'
-                    }`}
-                >
-                  <td className="px-4 py-3 font-medium text-gray-500">#{index + 1}</td>
-                  <td className="px-4 py-3 font-medium text-main-green">{emp.name}</td>
-                  <td className="px-4 py-3 text-gray-600 text-sm">{emp.role}</td>
-                  <td className="px-4 py-3 font-bold text-main-green">{emp.points}</td>
-                  <td className="px-4 py-3">
-                    <div className="w-full max-w-[120px]">
-                      <div className="flex justify-between text-xs mb-1">
-                        <span>Orders</span>
-                        <span>{emp.completedOrders}</span>
-                      </div>
-                      <Progress value={(emp.completedOrders / 200) * 100} className="h-1.5" />
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <HistoryTable data={employeesData} columns={columns} />
       </div>
+      <AddPointsDialog isAddPointsOpen={isAddPointsOpen} setIsAddPointsOpen={setIsAddPointsOpen} employeesData={employeesData} historyData={pointsHistory} setEmployeesData={setEmployeesData} setHistoryData={setHistoryData}/>
 
-      {/* Add Points Dialog */}
-      <Dialog open={isAddPointsOpen} onOpenChange={setIsAddPointsOpen}>
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle className="text-main-green">Award Points</DialogTitle>
-            <DialogDescription>
-              Manually award points to an employee for good performance.
-            </DialogDescription>
-          </DialogHeader>
-
-          <div className="space-y-4 py-4">
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">Employee</label>
-              <Select value={selectedEmployeeId} onValueChange={setSelectedEmployeeId}>
-                <SelectTrigger className="border-main-green/30 w-full">
-                  <SelectValue placeholder="Select employee" />
-                </SelectTrigger>
-                <SelectContent>
-                  {employeesData.map(emp => (
-                    <SelectItem key={emp.id} value={emp.id.toString()}>
-                      {emp.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">Points Amount</label>
-              <Input
-                type="number"
-                placeholder="e.g. 50"
-                value={pointsAmount}
-                onChange={(e) => setPointsAmount(e.target.value)}
-                className="border-main-green/30"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">Reason</label>
-              <Select value={pointsReason} onValueChange={setPointsReason}>
-                <SelectTrigger className="border-main-green/30 w-full">
-                  <SelectValue placeholder="Select reason" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Punctuality">Punctuality (Opening on time)</SelectItem>
-                  <SelectItem value="Extra Shift">Extra Shift</SelectItem>
-                  <SelectItem value="Customer Compliment">Customer Compliment</SelectItem>
-                  <SelectItem value="Exceptional Performance">Exceptional Performance</SelectItem>
-                  <SelectItem value="Cleanliness">Cleanliness & Hygiene</SelectItem>
-                  <SelectItem value="Other">Other</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">Notes (Optional)</label>
-              <Textarea
-                placeholder="Additional details..."
-                value={pointsNotes}
-                onChange={(e) => setPointsNotes(e.target.value)}
-                className="border-main-green/30"
-              />
-            </div>
-          </div>
-
-          <div className="flex justify-end gap-3">
-            <Button variant="outline" onClick={() => setIsAddPointsOpen(false)}>Cancel</Button>
-            <Button
-              onClick={handleAddPoints}
-              className="bg-main-green hover:bg-main-green/90 text-main-gold"
-              disabled={!selectedEmployeeId || !pointsAmount || !pointsReason}
-            >
-              Award Points
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 }

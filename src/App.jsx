@@ -1,79 +1,84 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Layout from "./components/Layout/Layout";
-import ProductsPage from "./pages/ProductsPage/ProductsPage";
-import SingleProductPage from "./pages/singleProductPage/SingleProductPage";
-import OrdersPage from "./pages/OrdersPage/OrdersPage";
-import CalculatorPage from "./pages/CalculatorPage/CalculatorPage";
-import SingleOrderPage from "./pages/SingleOrderPage/SingleOrderPage";
-import TransactionsPage from "./pages/ReportsPage/ReportsPage";
-import ReportsPage from "./pages/ReportsPage/ReportsPage";
-import InventoryPage from "./pages/InventoryPage/InventoryPage";
-import ReturnsPage from "./pages/ReturnsPage/ReturnsPage";
-import LoyaltyPage from "./pages/LoyaltyPage/LoyaltyPage";
-import RawMaterialsPage from "./pages/RawMaterialsPage/RawMaterialsPage";
-import ExternalMaterialsPage from "./pages/ExternalMaterialsPage/ExternalMaterialsPage";
-import SettingsPage from "./pages/SettingsPage/SettingsPage";
-import LoginPage from "./pages/LoginPage/LoginPage";
+import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
+import PublicRoute from "./components/ProtectedRoute/PublicRoute";
 import { Toaster } from "./components/ui/sonner";
+import CalculatorPage from "./pages/CalculatorPage/CalculatorPage";
+import ExternalMaterialsPage from "./pages/ExternalMaterialsPage/ExternalMaterialsPage";
+import InventoryPage from "./pages/InventoryPage/InventoryPage";
+import LoginPage from "./pages/LoginPage/LoginPage";
+import LoyaltyPage from "./pages/LoyaltyPage/LoyaltyPage";
+import OrdersPage from "./pages/OrdersPage/OrdersPage";
+import ProductsPage from "./pages/ProductsPage/ProductsPage";
+import MaterialsPage from "./pages/RawMaterialsPage/MaterialsPage";
+import ReportsPage from "./pages/ReportsPage/ReportsPage";
+import ReturnsPage from "./pages/ReturnsPage/ReturnsPage";
+import SettingsPage from "./pages/SettingsPage/SettingsPage";
+import SingleOrderPage from "./pages/SingleOrderPage/SingleOrderPage";
+import SingleProductPage from "./pages/singleProductPage/SingleProductPage";
 
+
+const queryClient = new QueryClient()
 
 function App() {
   const router = createBrowserRouter([
     {
       path: '/login',
-      element: <LoginPage />
+      element: <PublicRoute><LoginPage /></PublicRoute>
     },
     {
       path: '/',
-      element: <Layout />,
+      element: <ProtectedRoute><Layout /></ProtectedRoute>,
       children: [
         {
           index: true,
-          element: <ProductsPage />
+          element: <ProtectedRoute><ProductsPage /></ProtectedRoute>
         },
         {
           path: '/products/:id',
-          element: <SingleProductPage />
+          element: <ProtectedRoute><SingleProductPage /></ProtectedRoute>
         },
         {
           path: '/orders',
-          element: <OrdersPage />
+          element: <ProtectedRoute><OrdersPage /></ProtectedRoute>
         },
         {
           path: '/orders/:id',
-          element: <SingleOrderPage />
+          element: <ProtectedRoute><SingleOrderPage /></ProtectedRoute>
         },
         {
           path: '/calculator',
-          element: <CalculatorPage />
+          element: <ProtectedRoute><CalculatorPage /></ProtectedRoute>
         },
         {
           path: '/reports',
-          element: <ReportsPage />
+          element: <ProtectedRoute><ReportsPage /></ProtectedRoute>
         },
-        {
-          path: '/inventory',
-          element: <InventoryPage />
-        },
+        // {
+        //   path: '/inventory',
+        //   element: <ProtectedRoute><InventoryPage /></ProtectedRoute>
+        // },
         {
           path: '/returns',
-          element: <ReturnsPage />
+          element: <ProtectedRoute><ReturnsPage /></ProtectedRoute>
         },
         {
           path: '/loyalty',
-          element: <LoyaltyPage />
+          element: <ProtectedRoute><LoyaltyPage /></ProtectedRoute>
         },
         {
           path: '/raw-materials',
-          element: <RawMaterialsPage />
+          element: <ProtectedRoute><MaterialsPage /></ProtectedRoute>
         },
         {
           path: '/external-materials',
-          element: <ExternalMaterialsPage />
+          element: <ProtectedRoute><ExternalMaterialsPage /></ProtectedRoute>
         },
         {
           path: '/settings',
-          element: <SettingsPage />
+          element: <ProtectedRoute><SettingsPage /></ProtectedRoute>
         }
       ]
 
@@ -82,10 +87,11 @@ function App() {
 
 
   return (
-    <>
+    <QueryClientProvider client={queryClient}>
       <Toaster position="top-center" richColors />
       <RouterProvider router={router} />
-    </>
+      <ReactQueryDevtools initialIsOpen={false} />
+    </QueryClientProvider>
   )
 }
 

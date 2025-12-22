@@ -1,6 +1,143 @@
 import React from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { HistoryTable } from '../HistoryTable/HistoryTable';
+import { Button } from '../ui/button';
+import { ArrowUpDown } from 'lucide-react';
 const FinanceDtailes = () => {
+  const data = [
+    {
+      source: "In Store",
+      totalSales: 17775.4,
+      netIncome: 11211.44,
+      discount: 7563.96,
+      orders: 700,
+      avgBeforeDiscount: 27.31,
+      avgAfterDiscount: 16.87
+    },
+    {
+      source: "Delivery",
+      totalSales: 2775.4,
+      netIncome: 1211.44,
+      discount: 1563.96,
+      orders: 24,
+      avgBeforeDiscount: 27.31,
+      avgAfterDiscount: 16.87
+    }
+  ];
+  const columns = [
+    {
+      accessorKey: 'source',
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="text-left hover:bg-transparent hover:text-main-gold"
+          >
+            Source
+            <ArrowUpDown className="h-4 w-4" />
+          </Button>
+        )},
+      cell: ({ row }) => <span className="font-bold text-main-green">{row.original.source}</span>,
+    },
+    {
+      accessorKey: 'totalSales',
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="text-left hover:bg-transparent hover:text-main-gold"
+          >
+            Total Sales (₺)
+            <ArrowUpDown className="h-4 w-4" />
+          </Button>
+        )
+      },
+      cell: ({ row }) => <span className="font-bold text-main-green">${row.original.totalSales}</span>,
+    },
+    {
+      accessorKey: 'netIncome',
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="text-left hover:bg-transparent hover:text-main-gold"
+          >
+            Net Income (₺)
+            <ArrowUpDown className="h-4 w-4" />
+          </Button>
+        )
+      },
+      cell: ({ row }) => <span className="font-bold text-main-green">${row.original.netIncome}</span>,
+    },
+    {
+      accessorKey: 'discount',
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="text-left hover:bg-transparent hover:text-main-gold"
+          >
+            Discount (%)
+            <ArrowUpDown className="h-4 w-4" />
+          </Button>
+        )
+      },
+      cell: ({ row }) => <span className="font-bold text-main-green">${row.original.discount}</span>,
+    },
+    {
+      accessorKey: 'orders',
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="text-left hover:bg-transparent hover:text-main-gold"
+          >
+            Orders
+            <ArrowUpDown className="h-4 w-4" />
+          </Button>
+        )
+      },
+      cell: ({ row }) => <span className="font-bold text-main-green">{row.original.orders}</span>,
+    },
+    {
+      accessorKey: 'avgBeforeDiscount',
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="text-left hover:bg-transparent hover:text-main-gold"
+          >
+            Avg Before Discount
+            <ArrowUpDown className="h-4 w-4" />
+          </Button>
+        )
+      },
+      cell: ({ row }) => <span className="font-bold text-main-green">${row.original.avgBeforeDiscount}</span>,
+    },
+    {
+      accessorKey: 'avgAfterDiscount',
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="text-left hover:bg-transparent hover:text-main-gold"
+          >
+            Avg After Discount
+            <ArrowUpDown className="h-4 w-4" />
+          </Button>
+        )
+      },
+      cell: ({ row }) => <span className="font-bold text-main-green">${row.original.avgAfterDiscount}</span>,
+    },
+  ];
+
   return (
     <div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4  gap-4">
@@ -91,44 +228,7 @@ const FinanceDtailes = () => {
           <CardTitle className="text-main-green text-xl font-semibold ">statistics Details</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="overflow-x-auto">
-            <table className="w-full  text-left">
-              <thead className="bg-main-green text-main-gold font-semibold">
-                <tr>
-                  <th className="p-2">Source</th>
-                  <th className="p-2">Total Sales</th>
-                  <th className="p-2">Net Income</th>
-                  <th className="p-2">Descount</th>
-                  <th className="p-2">Orders</th>
-                  <th className="p-2">Avg Before Discount</th>
-                  <th className="p-2">Avg After Discount</th>
-                </tr>
-              </thead>
-              <tbody className="text-main-green font-semibold">
-
-                <tr className="border-b border-main-green/20">
-                  <td className="p-2">In Store</td>
-                  <td className="p-2">17,775.4</td>
-                  <td className="p-2">11,211.44</td>
-                  <td className="p-2">7,563.96</td>
-                  <td className="p-2">700</td>
-                  <td className="p-2">27.31</td>
-                  <td className="p-2">16.87</td>
-                </tr>
-                <tr className="border-b border-main-green/20">
-                  <td className="p-2">Delivery</td>
-                  <td className="p-2">2,775.4</td>
-                  <td className="p-2">1,211.44</td>
-                  <td className="p-2">1,563.96</td>
-                  <td className="p-2">24</td>
-                  <td className="p-2">27.31</td>
-                  <td className="p-2">16.87</td>
-                </tr>
-
-
-              </tbody>
-            </table>
-          </div>
+          <HistoryTable columns={columns} data={data} />
         </CardContent>
       </Card>
     </div>

@@ -627,6 +627,21 @@ export const orders = [
   },
 ];
 
+function detectStatus(quantity, minQuantity) {
+  if (quantity <= minQuantity * 0.5) {
+    return {
+      status: "critical",
+    };
+  } else if (quantity <= minQuantity) {
+    return {
+      status: "low",
+    };
+  } else {
+    return {
+      status: "good",
+    };
+  }
+}
 // Inventory Data - بيانات المخزون
 export const inventory = [
   {
@@ -641,6 +656,7 @@ export const inventory = [
     supplier: "Coffee Co.", // المورد
     lastRestocked: "2025-11-25", // آخر تاريخ تعبئة
     expiryDate: "2026-05-01", // تاريخ الانتهاء
+    status: detectStatus(25, 10), // حالة المخزون
   },
   {
     id: 2,
@@ -654,6 +670,7 @@ export const inventory = [
     supplier: "Dairy Fresh",
     lastRestocked: "2025-11-28",
     expiryDate: "2025-12-05",
+    status: detectStatus(8, 15), // حالة المخزون
   },
   {
     id: 3,
@@ -667,6 +684,7 @@ export const inventory = [
     supplier: "Sweet Supply",
     lastRestocked: "2025-11-20",
     expiryDate: "2026-11-20",
+    status: detectStatus(30, 20), // حالة المخزون
   },
   {
     id: 4,
@@ -680,6 +698,7 @@ export const inventory = [
     supplier: "Tea Masters",
     lastRestocked: "2025-11-15",
     expiryDate: "2026-06-15",
+    status: detectStatus(5, 8), // حالة المخزون
   },
   {
     id: 5,
@@ -693,6 +712,7 @@ export const inventory = [
     supplier: "Fresh Herbs Co.",
     lastRestocked: "2025-11-29",
     expiryDate: "2025-12-06",
+    status: detectStatus(12, 10), // حالة المخزون
   },
   {
     id: 6,
@@ -706,6 +726,7 @@ export const inventory = [
     supplier: "Choco Treats",
     lastRestocked: "2025-11-22",
     expiryDate: "2026-08-22",
+    status: detectStatus(15, 10), // حالة المخزون
   },
   {
     id: 7,
@@ -719,6 +740,7 @@ export const inventory = [
     supplier: "Flavor World",
     lastRestocked: "2025-11-10",
     expiryDate: "2026-02-10",
+    status: detectStatus(6, 8), // حالة المخزون
   },
   {
     id: 8,
@@ -732,6 +754,7 @@ export const inventory = [
     supplier: "Pure Honey",
     lastRestocked: "2025-11-18",
     expiryDate: "2027-11-18",
+    status: detectStatus(18, 12), // حالة المخزون
   },
   {
     id: 9,
@@ -745,6 +768,7 @@ export const inventory = [
     supplier: "Dairy Fresh",
     lastRestocked: "2025-11-27",
     expiryDate: "2025-12-15",
+    status: detectStatus(20, 15), // حالة المخزون
   },
   {
     id: 10,
@@ -758,6 +782,7 @@ export const inventory = [
     supplier: "Sweet Sauces",
     lastRestocked: "2025-11-23",
     expiryDate: "2026-05-23",
+    status: detectStatus(10, 8), // حالة المخزون
   },
   {
     id: 11,
@@ -771,6 +796,7 @@ export const inventory = [
     supplier: "Fresh Fruits Market",
     lastRestocked: "2025-11-26",
     expiryDate: "2025-12-03",
+    status: detectStatus(3, 10), // حالة المخزون
   },
   {
     id: 12,
@@ -784,6 +810,7 @@ export const inventory = [
     supplier: "Tropical Fruits",
     lastRestocked: "2025-11-24",
     expiryDate: "2025-12-04",
+    status: detectStatus(8, 8), // حالة المخزون
   },
   {
     id: 13,
@@ -797,6 +824,7 @@ export const inventory = [
     supplier: "Berry Farm",
     lastRestocked: "2025-11-28",
     expiryDate: "2025-12-02",
+    status: detectStatus(7, 6), // حالة المخزون
   },
   {
     id: 14,
@@ -810,6 +838,7 @@ export const inventory = [
     supplier: "Pack Supplies",
     lastRestocked: "2025-11-20",
     expiryDate: null, // لا ينتهي
+    status: detectStatus(500, 200), // حالة المخزون
   },
   {
     id: 15,
@@ -823,7 +852,27 @@ export const inventory = [
     supplier: "Pack Supplies",
     lastRestocked: "2025-11-15",
     expiryDate: null,
+    status: detectStatus(150, 200), // حالة المخزون
   },
+];
+
+export const materialsRequests = [
+  {
+    id: 'REQ-001',
+    materialName: 'Coffee Beans',
+    quantity: 20,
+    date: '2025-12-01 12:32',
+    status: 'pending', // pending, accepted, rejected, shipped, delivered
+    adminResponse: 'Under review'
+  },
+  {
+    id: 'REQ-002',
+    materialName: 'Fresh Milk',
+    quantity: 10,
+    date: '2025-11-30 12:40',
+    status: 'delivered',
+    adminResponse: 'Delivered on time'
+  }
 ];
 
 // Inventory History - سجل حركة المخزون
@@ -1230,23 +1279,119 @@ export const pointsHistory = [
 // External Materials Data
 export const externalMaterialsData = [
   // Packaging Materials
-  { id: 'EXT-001', name: 'Paper Cups - Small', category: 'packaging', unit: 'carton', currentQuantity: 15, maxQuantity: 50, availableToOrder: true },
-  { id: 'EXT-002', name: 'Paper Cups - Medium', category: 'packaging', unit: 'carton', currentQuantity: 8, maxQuantity: 50, availableToOrder: true },
-  { id: 'EXT-004', name: 'Cup Lids - Small', category: 'packaging', unit: 'carton', currentQuantity: 20, maxQuantity: 50, availableToOrder: false },
+  {
+    id: "EXT-001",
+    name: "Paper Cups - Small",
+    category: "packaging",
+    unit: "carton",
+    currentQuantity: 15,
+    maxQuantity: 50,
+    availableToOrder: true,
+  },
+  {
+    id: "EXT-002",
+    name: "Paper Cups - Medium",
+    category: "packaging",
+    unit: "carton",
+    currentQuantity: 8,
+    maxQuantity: 50,
+    availableToOrder: true,
+  },
+  {
+    id: "EXT-004",
+    name: "Cup Lids - Small",
+    category: "packaging",
+    unit: "carton",
+    currentQuantity: 20,
+    maxQuantity: 50,
+    availableToOrder: false,
+  },
 
   // Cleaning Materials
-  { id: 'EXT-011', name: 'Dishwashing Liquid', category: 'cleaning', unit: 'bottle', currentQuantity: 6, maxQuantity: 20, availableToOrder: false },
-  { id: 'EXT-012', name: 'Floor Cleaner', category: 'cleaning', unit: 'bottle', currentQuantity: 4, maxQuantity: 15, availableToOrder: false },
-  { id: 'EXT-013', name: 'Glass Cleaner', category: 'cleaning', unit: 'bottle', currentQuantity: 5, maxQuantity: 15, availableToOrder: true },
+  {
+    id: "EXT-011",
+    name: "Dishwashing Liquid",
+    category: "cleaning",
+    unit: "bottle",
+    currentQuantity: 6,
+    maxQuantity: 20,
+    availableToOrder: false,
+  },
+  {
+    id: "EXT-012",
+    name: "Floor Cleaner",
+    category: "cleaning",
+    unit: "bottle",
+    currentQuantity: 4,
+    maxQuantity: 15,
+    availableToOrder: false,
+  },
+  {
+    id: "EXT-013",
+    name: "Glass Cleaner",
+    category: "cleaning",
+    unit: "bottle",
+    currentQuantity: 5,
+    maxQuantity: 15,
+    availableToOrder: true,
+  },
 
   // Maintenance Materials
-  { id: 'EXT-019', name: 'LED Bulbs - Warm White', category: 'maintenance', unit: 'piece', currentQuantity: 4, maxQuantity: 15, availableToOrder: true },
-  { id: 'EXT-021', name: 'Power Cables', category: 'maintenance', unit: 'piece', currentQuantity: 2, maxQuantity: 10, availableToOrder: true },
-  { id: 'EXT-022', name: 'Extension Cords', category: 'maintenance', unit: 'piece', currentQuantity: 1, maxQuantity: 8, availableToOrder: true },
+  {
+    id: "EXT-019",
+    name: "LED Bulbs - Warm White",
+    category: "maintenance",
+    unit: "piece",
+    currentQuantity: 4,
+    maxQuantity: 15,
+    availableToOrder: true,
+  },
+  {
+    id: "EXT-021",
+    name: "Power Cables",
+    category: "maintenance",
+    unit: "piece",
+    currentQuantity: 2,
+    maxQuantity: 10,
+    availableToOrder: true,
+  },
+  {
+    id: "EXT-022",
+    name: "Extension Cords",
+    category: "maintenance",
+    unit: "piece",
+    currentQuantity: 1,
+    maxQuantity: 8,
+    availableToOrder: true,
+  },
   // Other Materials
-  { id: 'EXT-025', name: 'Hand Sanitizer', category: 'other', unit: 'bottle', currentQuantity: 8, maxQuantity: 25, availableToOrder: true },
-  { id: 'EXT-026', name: 'Paper Towels', category: 'other', unit: 'roll', currentQuantity: 12, maxQuantity: 40, availableToOrder: true },
-  { id: 'EXT-027', name: 'Toilet Paper', category: 'other', unit: 'roll', currentQuantity: 15, maxQuantity: 50, availableToOrder: false },
+  {
+    id: "EXT-025",
+    name: "Hand Sanitizer",
+    category: "other",
+    unit: "bottle",
+    currentQuantity: 8,
+    maxQuantity: 25,
+    availableToOrder: true,
+  },
+  {
+    id: "EXT-026",
+    name: "Paper Towels",
+    category: "other",
+    unit: "roll",
+    currentQuantity: 12,
+    maxQuantity: 40,
+    availableToOrder: true,
+  },
+  {
+    id: "EXT-027",
+    name: "Toilet Paper",
+    category: "other",
+    unit: "roll",
+    currentQuantity: 15,
+    maxQuantity: 50,
+    availableToOrder: false,
+  },
 ];
 
 // External Materials History - Mock Data
@@ -1259,7 +1404,7 @@ export const externalHistory = [
     quantity: 5,
     reason: "Restock",
     performedBy: "Store Manager",
-    notes: "Weekly replenishment"
+    notes: "Weekly replenishment",
   },
   {
     id: 2,
@@ -1269,7 +1414,7 @@ export const externalHistory = [
     quantity: 1,
     reason: "Usage",
     performedBy: "Kitchen Staff",
-    notes: "Empty bottle replacement"
+    notes: "Empty bottle replacement",
   },
   {
     id: 3,
@@ -1279,7 +1424,7 @@ export const externalHistory = [
     quantity: 10,
     reason: "Restock",
     performedBy: "Store Manager",
-    notes: "Monthly supply"
+    notes: "Monthly supply",
   },
   {
     id: 4,
@@ -1289,7 +1434,7 @@ export const externalHistory = [
     quantity: 2,
     reason: "Usage",
     performedBy: "Cleaning Staff",
-    notes: "Restroom supply"
+    notes: "Restroom supply",
   },
   {
     id: 5,
@@ -1299,6 +1444,6 @@ export const externalHistory = [
     quantity: 5,
     reason: "Restock",
     performedBy: "Store Manager",
-    notes: "COVID safety measures"
-  }
+    notes: "COVID safety measures",
+  },
 ];

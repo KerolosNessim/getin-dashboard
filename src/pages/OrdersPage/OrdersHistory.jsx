@@ -1,9 +1,13 @@
 import React from 'react'
 import SectionHeader from '@/components/SctionHeader/SectionHeader'
+import { HistoryTable } from '@/components/HistoryTable/HistoryTable'
+import { Button } from '@/components/ui/button'
+import { ArrowUpDown } from 'lucide-react'
 
 const OrdersHistory = ({ orders }) => {
-  // Sort orders by date (newest first)
-  const sortedOrders = [...orders].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+
+
+
 
   const getStatusColor = (status) => {
     switch (status.toLowerCase()) {
@@ -17,73 +21,115 @@ const OrdersHistory = ({ orders }) => {
         return 'bg-gray-100 text-gray-700 border-gray-200'
     }
   }
+  const orderHistoryColumns = [
+    {
+      accessorKey: 'orderNumber',
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="text-left hover:bg-transparent hover:text-main-gold"
+          >
+            Order No.
+            <ArrowUpDown className="h-4 w-4" />
+          </Button>
+        )
+      },
+      cell: ({ row }) => <div className='text-lg font-semibold text-main-green'>#{row.original.orderNumber}</div>,
+    },
+    {
+      accessorKey: 'createdAt',
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="text-left hover:bg-transparent hover:text-main-gold"
+          >
+            Date & Time
+            <ArrowUpDown className="h-4 w-4" />
+          </Button>
+        )
+      },
+    },
+    {
+      accessorKey: 'type',
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="text-left hover:bg-transparent hover:text-main-gold"
+          >
+            Type
+            <ArrowUpDown className="h-4 w-4" />
+          </Button>
+        )
+      },
+      cell: ({ row }) => <span className="px-3 py-1 bg-main-gold/20 text-main-green text-xs font-medium rounded-full border border-main-gold/30">
+        {row.original.type}
+      </span>,
+    },
+    {
+      accessorKey: 'itemsCount',
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="text-left hover:bg-transparent hover:text-main-gold"
+          >
+            Items
+            <ArrowUpDown className="h-4 w-4" />
+          </Button>
+        )
+      },
+    },
+    {
+      accessorKey: 'totals',
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="text-left hover:bg-transparent hover:text-main-gold"
+          >
+            Total Amount
+            <ArrowUpDown className="h-4 w-4" />
+          </Button>
+        )
+      },
+      cell: ({ row }) => <span className="font-bold text-main-green ">${row.original.totals.finalAmount}</span>,
+    },
+    {
+      accessorKey: 'status',
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            className="text-left hover:bg-transparent hover:text-main-gold"
+          >
+            Status
+            <ArrowUpDown className="h-4 w-4" />
+          </Button>
+        )
+      },
+      cell: ({ row }) => <span className={`px-3 py-1 rounded-full text-xs font-semibold border ${getStatusColor(row.original.status)}`}>
+        {row.original.status.charAt(0).toUpperCase() + row.original.status.slice(1)}
+      </span>,
+    },
+    // {
+    //   accessorKey: 'platform',
+    //   header: 'Platform',
+    // },
+  ]
 
   return (
     <div className='mt-8 pb-8'>
       <SectionHeader title="Orders History" />
-
-      <div className="bg-white rounded-lg border border-main-green/20 overflow-hidden mt-6 shadow-sm">
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-main-green text-main-gold">
-              <tr>
-                <th className="px-6 py-4 text-left text-sm font-semibold tracking-wider">Order No.</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold tracking-wider">Date & Time</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold tracking-wider">Type</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold tracking-wider">Items</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold tracking-wider">Total Amount</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold tracking-wider">Platform</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold tracking-wider">Status</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-main-green/10">
-              {sortedOrders.length > 0 ? (
-                sortedOrders.map((order, index) => (
-                  <tr
-                    key={order.id}
-                    className={`
-                      transition-colors hover:bg-main-gold/10
-                      ${index % 2 === 0 ? 'bg-white' : 'bg-main-gold/5'}
-                    `}
-                  >
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="font-semibold text-main-green">#{order.orderNumber}</span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-                      {order.createdAt}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="px-3 py-1 bg-main-gold/20 text-main-green text-xs font-medium rounded-full border border-main-gold/30">
-                        {order.type}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-                      {order.itemsCount} Items
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="font-bold text-main-green">${order.totals.finalAmount}</span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-                      {order.platform}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`px-3 py-1 rounded-full text-xs font-semibold border ${getStatusColor(order.status)}`}>
-                        {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
-                      </span>
-                    </td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan="7" className="px-6 py-8 text-center text-gray-500">
-                    No orders found in history
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-      </div>
+      <HistoryTable columns={orderHistoryColumns} data={orders} />
     </div>
   )
 }

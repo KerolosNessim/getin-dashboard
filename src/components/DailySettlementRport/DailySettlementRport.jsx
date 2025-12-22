@@ -12,6 +12,7 @@ const DailySettlementRport = () => {
     { label: "Total Discounts Today (₺)", value: "250" },
     { label: "Difference in Sales Compared to Yesterday", value: "+12%" },
   ];
+
   return (
     <div className="space-y-6">
 
