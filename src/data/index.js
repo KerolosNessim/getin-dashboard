@@ -1447,3 +1447,34 @@ export const externalHistory = [
     notes: "COVID safety measures",
   },
 ];
+
+// External Materials Requests - Mock Data
+export const externalRequests = [
+  {
+    id: 'EXT-REQ-001',
+    materialName: 'Paper Cups - Medium',
+    quantity: 10,
+    notes: 'Urgent - Running low',
+    date: '2025-12-03 09:00',
+    status: 'pending',
+    adminResponse: 'Under review'
+  },
+  {
+    id: 'EXT-REQ-002',
+    materialName: 'LED Bulbs - Warm White',
+    quantity: 2,
+    notes: 'Counter area - right side',
+    date: '2025-12-02 11:52',
+    status: 'shipped',
+    adminResponse: 'Shipped via courier'
+  },
+  {
+    id: 'EXT-REQ-003',
+    materialName: 'Dishwashing Liquid',
+    quantity: 5,
+    notes: '',
+    date: '2025-12-01 12:20',
+    status: 'delivered',
+    adminResponse: 'Delivered successfully'
+  }
+];
