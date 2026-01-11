@@ -151,7 +151,7 @@ export function DataTable({
                     <TableCell key={cell.id} >
                       {cell.column.id === "name" ? (
                         <div className="flex items-center gap-2">
-                          <img className="size-16 object-contain" src="/public/coffee.png" alt="img" />
+                          <img className="size-16 object-contain" src="/coffee.png" alt="img" />
                           {flexRender(cell.column.columnDef.cell, cell.getContext())}
                         </div>
                       ) : (

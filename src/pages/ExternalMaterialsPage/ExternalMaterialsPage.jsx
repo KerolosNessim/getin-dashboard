@@ -3,19 +3,13 @@ import { ExternalHistoryColumns, ExternalMaterialsColumns, ExternalRequsetsColum
 import { HistoryTable } from '@/components/HistoryTable/HistoryTable';
 import { RequsetsTable } from '@/components/RawMateriales/RequsetsTable';
 import SectionHeader from '@/components/SctionHeader/SectionHeader';
-import { Button } from '@/components/ui/button';
 import { externalHistory, externalMaterialsData, externalRequests } from '@/data';
-import {
-  History
-} from 'lucide-react';
-import { useState } from 'react';
 
 
 
 export default function ExternalMaterialsPage() {
 
   // Requests State
-  const [requests, setRequests] = useState();
 
 
 
