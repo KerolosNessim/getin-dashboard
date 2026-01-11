@@ -18,7 +18,6 @@ import { useQueryClient } from "@tanstack/react-query";
 
 const ProductCard = ({ product }) => {
   const [isOpen, setIsOpen] = useState(false);
-  // const [disableReason, setDisableReason] = useState('');
   const isAvailable = product?.is_available;
   const queryClient = useQueryClient();
   const toggleStatus = async () => {
@@ -48,34 +47,21 @@ const ProductCard = ({ product }) => {
               <Eye size={16} />
               View
             </Link>
-            {/* {withStatusChangeButton && ( */}
+            {/* chanange actitve */}
             <Dialog open={isOpen} onOpenChange={setIsOpen}>
               <DialogTrigger
                 className={`px-4 py-2 rounded text-white ${isAvailable ? 'bg-red-700 hover:bg-red-600' : 'bg-green-700 hover:bg-green-600'
                   }`}
               >
-                {isAvailable ? <p className="flex items-center gap-1"><MdBlockFlipped size={16} /> Disable</p> : 'Enable'}
+                Chanage Status
               </DialogTrigger>
               <DialogContent className="bg-slate-100">
                 <DialogHeader className="flex flex-col items-center justify-center gap-4">
                   <DialogTitle className="text-center">
-                    {isAvailable ? 'Are you sure you want to disable this product?' : 'Are you sure you want to enable this product?'}
+                    Are you sure you want to chanage this product status?
                   </DialogTitle>
-                  {/* 
-                    {isAvailable && (
-                      <div className="w-full">
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Reason for disabling: <span className="text-red-600">*</span>
-                        </label>
-                        <textarea
-                          value={disableReason}
-                          onChange={(e) => setDisableReason(e.target.value)}
-                          placeholder="Please enter the reason for disabling this product..."
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-main-green resize-none"
-                          rows={3}
-                        />
-                      </div>
-                    )} */}
+                  
+
 
                   <DialogDescription className="flex items-center justify-center gap-4">
                     <button
@@ -96,7 +82,6 @@ const ProductCard = ({ product }) => {
                 </DialogHeader>
               </DialogContent>
             </Dialog>
-            {/* )} */}
           </div>
         </div>
       </CardContent>

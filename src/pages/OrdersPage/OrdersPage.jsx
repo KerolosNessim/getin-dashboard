@@ -15,25 +15,14 @@ const OrdersPage = () => {
     setAllOrders(allOrders.map(order => order.id === orderId ? { ...order, status } : order))
   }
 
-  const pickupOrders = allOrders.filter(order => order.type === "Pickup")
-  const deliveryOrders = allOrders.filter(order => order.type === "Delivery")
 
   return (
     <div className='space-y-6'>
-      <Tabs defaultValue="pickup" className="w-full">
-        <TabsList className=" bg-transparent gap-4 mb-6">
-          <TabsTrigger className={tabStyle} value="pickup">Pickup</TabsTrigger>
-          <TabsTrigger className={tabStyle} value="delivery">Delivery</TabsTrigger>
-        </TabsList>
 
-        <TabsContent value="pickup">
-          <OrdersView orders={pickupOrders} onStatusChange={handleStatusChange} />
-        </TabsContent>
 
-        <TabsContent value="delivery">
-          <OrdersView orders={deliveryOrders} onStatusChange={handleStatusChange} />
-        </TabsContent>
-      </Tabs>
+      <OrdersView  onStatusChange={handleStatusChange} />
+
+
 
       <OrdersHistory orders={allOrders} />
     </div>
