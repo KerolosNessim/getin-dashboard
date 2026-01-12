@@ -1,46 +1,56 @@
 import SectionHeader from '@/components/SctionHeader/SectionHeader'
-import React, { useState } from 'react'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { orders } from '@/data'
 import OrderCard from '@/components/OrderCard/OrderCard'
 import OrdersHistory from './OrdersHistory'
+import { keepPreviousData, useQuery } from '@tanstack/react-query'
+import { getOrders } from '@/api/orders'
+import { useState } from 'react'
+import { Button } from '@/components/ui/button'
+import Pagination from '@/components/paginatins/Pagination'
 
 
 const OrdersPage = () => {
+  const [page, setPage] = useState(1);
 
-  const tabStyle = "bg-main-gold text-main-green text-base h-12 data-[state=active]:bg-main-green data-[state=active]:text-main-gold transition-all duration-200"
-  const [allOrders, setAllOrders] = useState(orders)
+  const { data, isLoading, isError, isFetching } = useQuery({
+    queryKey: ["orders", page],
+    queryFn: () => getOrders(page),
+    placeholderData: keepPreviousData,
+  });
 
-  const handleStatusChange = (orderId, status) => {
-    setAllOrders(allOrders.map(order => order.id === orderId ? { ...order, status } : order))
-  }
+  const orders = data?.data ?? [];
+  const pagination = data?.pagination;
 
+  const currentPage = pagination?.currentPage ?? page;
+  const lastPage = pagination?.lastPage ?? 1;
+
+
+
+  if (isLoading) return <div>Loading...</div>;
+  if (isError) return <div>Something went wrong</div>;
 
   return (
-    <div className='space-y-6'>
+    <div className="space-y-6">
+      <OrdersView orders={orders} />
 
+      {/* Pagination */}
+      <Pagination currentPage={currentPage} lastPage={lastPage} setPage={setPage} isFetching={isFetching} />
 
-      <OrdersView  onStatusChange={handleStatusChange} />
-
-
-
-      <OrdersHistory orders={allOrders} />
     </div>
-  )
-}
+  );
+};
 
-export default OrdersPage
+export default OrdersPage;
 
 
 const OrdersView = ({ orders, onStatusChange }) => {
-  const pendingOrders = orders.filter(order => order.status === "pending")
-  const completedOrders = orders.filter(order => order.status === "completed")
-  const canceledOrders = orders.filter(order => order.status === "canceled")
+  const pendingOrders = orders?.filter(order => order.status === "pending")
+  const completedOrders = orders?.filter(order => order.status === "completed")
+  const canceledOrders = orders?.filter(order => order.status === "canceled")
 
   return (
     <div className='grid grid-cols-1 md:grid-cols-3 gap-4 pb-4' >
       <div>
-        <SectionHeader title={`Pending Orders (${pendingOrders.length})`} />
+        <SectionHeader title={`Pending Orders (${pendingOrders?.length})`} />
         <div className='space-y-4 '>
           {
             pendingOrders?.length > 0 ?
@@ -52,7 +62,7 @@ const OrdersView = ({ orders, onStatusChange }) => {
         </div>
       </div>
       <div>
-        <SectionHeader title={`Completed Orders (${completedOrders.length})`} />
+        <SectionHeader title={`Completed Orders (${completedOrders?.length})`} />
         <div className='space-y-4 '>
           {
             completedOrders?.length > 0 ?
@@ -64,7 +74,7 @@ const OrdersView = ({ orders, onStatusChange }) => {
         </div>
       </div>
       <div>
-        <SectionHeader title={`Canceled Orders (${canceledOrders.length})`} />
+        <SectionHeader title={`Canceled Orders (${canceledOrders?.length})`} />
         <div className='space-y-4 '>
           {
             canceledOrders?.length > 0 ?
@@ -78,3 +88,6 @@ const OrdersView = ({ orders, onStatusChange }) => {
     </div>
   )
 }
+
+
+// pending, under_receipt, under_review, in_preparation, prepared, shipped, arrived, completed, canceled, wasted
