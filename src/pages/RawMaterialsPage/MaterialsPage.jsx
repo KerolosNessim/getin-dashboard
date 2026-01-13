@@ -19,16 +19,10 @@ const MaterialsPage = () => {
     queryFn: getMaterialsRequests
   })
   
-
-
-
-
-
   return (
     <div className="space-y-8 pb-10 ">
       <SectionHeader title="Raw Materials" />
       <DataTable columns={RowMaterialsColumns} data={materials || []} />
-
       <section className="space-y-4">
         <h2 className="text-lg font-semibold text-main-green flex items-center gap-2">
           Internal Material Requests

@@ -1,58 +1,90 @@
-import  { useState } from 'react'
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '../ui/dialog';
+import { useState } from 'react'
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '../ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Textarea } from '../ui/textarea';
+import { Plus } from 'lucide-react';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+  FormDescription,
+} from "@/components/ui/form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
+import { addPoints as addPointsAPI } from '@/api/loyalty';
 
-const AddPointsDialog = ({ employeesData, historyData, setEmployeesData, setHistoryData, setIsAddPointsOpen, isAddPointsOpen }) => {
-  // New Points Form State
-  const [selectedEmployeeId, setSelectedEmployeeId] = useState("");
-  const [pointsAmount, setPointsAmount] = useState("");
-  const [pointsReason, setPointsReason] = useState("");
-  const [pointsNotes, setPointsNotes] = useState("");
 
-  // Handle Add Points
-  const handleAddPoints = ({}) => {
-    if (!selectedEmployeeId || !pointsAmount || !pointsReason) return;
 
-    const employee = employeesData.find(e => e.id.toString() === selectedEmployeeId);
-    if (!employee) return;
+const formSchema = z.object({
+  point_amount: z.coerce.number({
+    invalid_type_error: "Point amount is required",
+  }).min(1, { message: "Minimum points is 1" }),
+  type_reason: z.string().nonempty({ message: "Please select a reason" }),
+  other_reason: z.string().optional(),
+}).refine((data) => {
+  if (data.type_reason === 'other' && !data.other_reason) {
+    return false;
+  }
+  return true;
+}, {
+  message: "Other reason is required when 'Other' is selected",
+  path: ["other_reason"],
+});
 
-    const points = parseInt(pointsAmount);
+const AddPointsDialog = ({ selectedEmployee }) => {
+  const [open, setOpen] = useState(false)
 
-    // Update Employee Points
-    const updatedEmployees = employeesData.map(emp => {
-      if (emp.id === employee.id) {
-        return { ...emp, points: emp.points + points };
-      }
-      return emp;
-    });
-    setEmployeesData(updatedEmployees);
+  const form = useForm({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      point_amount: "",
+      type_reason: "",
+      other_reason: "",
+    },
+  });
 
-    // Add to History
-    const newHistoryItem = {
-      id: historyData.length + 1,
-      employeeId: employee.id,
-      employeeName: employee.name,
-      points: points,
-      reason: pointsReason,
-      type: "manual",
-      date: new Date().toISOString().slice(0, 16).replace("T", " "),
-      notes: pointsNotes,
+  const queryClient = useQueryClient()
+
+  const { mutate: addPoints } = useMutation({
+    mutationFn: (data) => addPointsAPI(data),
+    onSuccess: (res) => {
+      toast.success(res?.message)
+      queryClient.invalidateQueries({ queryKey: ['employees'] })
+      setOpen(false)
+      form.reset()
+    },
+    onError: () => {
+      toast.error("Something went wrong")
+    }
+  })
+
+  const handleSubmit = async (values) => {
+    const data = {
+      employee_id: selectedEmployee?.id,
+      ...values,
     };
-    setHistoryData([newHistoryItem, ...historyData]);
-
-    // Reset and Close
-    setIsAddPointsOpen(false);
-    setSelectedEmployeeId("");
-    setPointsAmount("");
-    setPointsReason("");
-    setPointsNotes("");
+    addPoints(data)
   };
+
   return (
-    <Dialog open = { isAddPointsOpen } onOpenChange = { setIsAddPointsOpen } >
-      <DialogContent className="sm:max-w-[425px]">
+    <Dialog open={open} onOpenChange={setOpen} >
+      <DialogTrigger asChild>
+        <Button
+          className="bg-main-green hover:bg-main-green/90 text-main-gold"
+        >
+          <Plus className="w-4 h-4 mr-2" />
+          Add Points
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="w-1/2">
         <DialogHeader>
           <DialogTitle className="text-main-green">Award Points</DialogTitle>
           <DialogDescription>
@@ -60,74 +92,136 @@ const AddPointsDialog = ({ employeesData, historyData, setEmployeesData, setHist
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-4 py-4">
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700">Employee</label>
-            <Select value={selectedEmployeeId} onValueChange={setSelectedEmployeeId}>
-              <SelectTrigger className="border-main-green/30 w-full">
-                <SelectValue placeholder="Select employee" />
-              </SelectTrigger>
-              <SelectContent>
-                {employeesData.map(emp => (
-                  <SelectItem key={emp.id} value={emp.id.toString()}>
-                    {emp.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+        {selectedEmployee && (
+          <div className="space-y-2 py-2">
+            {/* Employee Info Card */}
+            <div className="bg-gray-50 p-4 rounded-lg border border-gray-100 space-y-3">
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-gray-500">Employee Name</span>
+                <span className="font-semibold text-gray-900">{selectedEmployee?.name}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-gray-500">Email</span>
+                <span className="font-medium text-gray-900">{selectedEmployee?.email}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-gray-500">Role</span>
+                <span className="font-medium text-gray-900">{selectedEmployee?.role}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-gray-500">Current Points</span>
+                <span className="font-bold text-main-green text-lg">{selectedEmployee?.total_points}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-gray-500">Total Orders</span>
+                <span className="font-medium text-gray-900">{selectedEmployee?.orders}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-gray-500">Performance</span>
+                <span className="font-medium text-gray-900">{selectedEmployee?.performance}%</span>
+              </div>
+            </div>
 
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700">Points Amount</label>
-            <Input
-              type="number"
-              placeholder="e.g. 50"
-              value={pointsAmount}
-              onChange={(e) => setPointsAmount(e.target.value)}
-              className="border-main-green/30"
-            />
-          </div>
+            {/* Points Award Form */}
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+                <FormField
+                  control={form.control}
+                  name="point_amount"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-sm font-medium text-gray-700">
+                        Points to Award
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          type="number"
+                          placeholder="Enter points amount..."
+                          min="1"
+                          {...field}
+                          className="border-main-green/30 focus:border-main-green"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700">Reason</label>
-            <Select value={pointsReason} onValueChange={setPointsReason}>
-              <SelectTrigger className="border-main-green/30 w-full">
-                <SelectValue placeholder="Select reason" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="Punctuality">Punctuality (Opening on time)</SelectItem>
-                <SelectItem value="Extra Shift">Extra Shift</SelectItem>
-                <SelectItem value="Customer Compliment">Customer Compliment</SelectItem>
-                <SelectItem value="Exceptional Performance">Exceptional Performance</SelectItem>
-                <SelectItem value="Cleanliness">Cleanliness & Hygiene</SelectItem>
-                <SelectItem value="Other">Other</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+                <FormField
+                  control={form.control}
+                  name="type_reason"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-sm font-medium text-gray-700">Reason</FormLabel>
+                      <Select value={field.value} onValueChange={field.onChange}>
+                        <FormControl>
+                          <SelectTrigger className="border-main-green/30 w-full">
+                            <SelectValue placeholder="Select reason" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="punctuality_opening_on_time">Punctuality (Opening on time)</SelectItem>
+                          <SelectItem value="extra_shift">Extra Shift</SelectItem>
+                          <SelectItem value="customer_compliment">Customer Compliment</SelectItem>
+                          <SelectItem value="exceptional_performance">Exceptional Performance</SelectItem>
+                          <SelectItem value="cleanliness_hygiene">Cleanliness & Hygiene</SelectItem>
+                          <SelectItem value="other">Other</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700">Notes (Optional)</label>
-            <Textarea
-              placeholder="Additional details..."
-              value={pointsNotes}
-              onChange={(e) => setPointsNotes(e.target.value)}
-              className="border-main-green/30"
-            />
-          </div>
-        </div>
 
-        <div className="flex justify-end gap-3">
-          <Button variant="outline" onClick={() => setIsAddPointsOpen(false)}>Cancel</Button>
-          <Button
-            onClick={handleAddPoints}
-            className="bg-main-green hover:bg-main-green/90 text-main-gold"
-            disabled={!selectedEmployeeId || !pointsAmount || !pointsReason}
-          >
-            Award Points
-          </Button>
-        </div>
+                <FormField
+                  control={form.control}
+                  name="type_reason"
+                  render={({ field: typeReasonField }) => (
+                    <>
+                      {typeReasonField.value === "other" && (
+                        <FormField
+                          control={form.control}
+                          name="other_reason"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel className="text-sm font-medium text-gray-700">
+                                Other Reason
+                              </FormLabel>
+                              <FormControl>
+                                <Textarea
+                                  placeholder="Please specify the reason..."
+                                  {...field}
+                                  className="border-main-green/30 focus:border-main-green resize-none"
+                                  rows={3}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      )}
+                    </>
+                  )}
+                />
+
+
+                {/* Action Buttons */}
+                <div className="flex justify-end gap-3 pt-2">
+                  <Button type="button" variant="outline" onClick={() => setOpen(false)}>
+                    Cancel
+                  </Button>
+                  <Button type="submit" className="bg-main-green hover:bg-main-green/90 text-main-gold">
+                    <Plus className="w-4 h-4 mr-2" />
+                    Award Points
+                  </Button>
+                </div>
+              </form>
+            </Form>
+          </div>
+        )}
       </DialogContent>
-      </Dialog>
+    </Dialog>
   )
 }
 
