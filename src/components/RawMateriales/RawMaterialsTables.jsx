@@ -8,6 +8,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table"
 
+import { getMaterialsCategories } from "@/api/materials"
 import {
   Table,
   TableBody,
@@ -16,11 +17,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { DataTablePagination } from "./TablePagination"
+import { useQuery } from "@tanstack/react-query"
+import { Search } from "lucide-react"
 import { useState } from "react"
 import { Input } from "../ui/input"
-import { Search } from "lucide-react"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
+import { DataTablePagination } from "./TablePagination"
 
 
 
@@ -44,21 +46,20 @@ export function DataTable({
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
   })
+  const { data: matrialsCategories } = useQuery({
+    queryKey: ["categories"],
+    queryFn: getMaterialsCategories
+  })
+
   const categories = [
     { value: 'all', label: 'All Categories' },
-    { value: 'coffee', label: 'Coffee' },
-    { value: 'dairy', label: 'Dairy' },
-    { value: 'sweetener', label: 'Sweetener' },
-    { value: 'flavoring', label: 'Flavoring' },
-    { value: 'fruits', label: 'Fruits' },
-    { value: 'tea', label: 'Tea' },
-    { value: 'herbs', label: 'Herbs' },
+    ...(matrialsCategories?.map((cat) => ({ value: cat.name, label: cat.name })) || []),
   ];
   const status = [
     { value: 'all', label: 'All Status' },
-    { value: 'low', label: 'Low' },
-    { value: 'critical', label: 'Critical' },
-    { value: 'good', label: 'Good' },
+    { value: 'Low Stock', label: 'Low Stock' },
+    { value: 'Out Stock', label: 'Out Stock' },
+    { value: 'Good', label: 'Good' },
   ];
   const [categoryFilter, setCategoryFilter] = useState('all');
   const [statusFilter, setStatusFilter] = useState('all');
@@ -84,7 +85,7 @@ export function DataTable({
             value={categoryFilter}
             onValueChange={(value) => {
               setCategoryFilter(value);
-              table.getColumn("category")?.setFilterValue(value === "all" ? undefined : value);
+              table.getColumn("category_name")?.setFilterValue(value === "all" ? undefined : value);
             }}
           >
             <SelectTrigger className="w-[180px] border-main-green/30">
@@ -149,14 +150,8 @@ export function DataTable({
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id} >
-                      {cell.column.id === "name" ? (
-                        <div className="flex items-center gap-2">
-                          <img className="size-16 object-contain" src="/coffee.png" alt="img" />
-                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                        </div>
-                      ) : (
-                        flexRender(cell.column.columnDef.cell, cell.getContext())
-                      )}
+
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </TableCell>
                   ))}
                 </TableRow>

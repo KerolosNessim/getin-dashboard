@@ -19,9 +19,19 @@ export const RowMaterialsColumns = [
         </Button>
       )
     },
+    cell: ({ row }) => {
+      return (
+        <div className="flex items-center gap-2">
+          <img src={row?.original?.image} alt={row?.original?.name} className="size-12 object-contain" />
+          <p>
+            {row?.original?.name}
+          </p>
+        </div>
+      )
+    }
   },
   {
-    accessorKey: "category",
+    accessorKey: "category_name",
     header: ({ column }) => {
       return (
         <Button
@@ -51,7 +61,7 @@ export const RowMaterialsColumns = [
     },
   },
   {
-    accessorKey: "quantity",
+    accessorKey: "current_quantity",
     header: ({ column }) => {
       return (
         <Button
@@ -66,7 +76,7 @@ export const RowMaterialsColumns = [
     },
   },
   {
-    accessorKey: "minQuantity",
+    accessorKey: "min",
     header: ({ column }) => {
       return (
         <Button
@@ -81,7 +91,7 @@ export const RowMaterialsColumns = [
     },
   },
   {
-    accessorKey: "maxQuantity",
+    accessorKey: "max",
     header: ({ column }) => {
       return (
         <Button
@@ -97,11 +107,6 @@ export const RowMaterialsColumns = [
   },
   {
     id: "status",
-    accessorFn: (row) => {
-      if (row.quantity <= row.minQuantity * 0.5) return "critical";
-      if (row.quantity <= row.minQuantity) return "low";
-      return "good";
-    },
     header: ({ column }) => {
       return (
         <Button
@@ -116,11 +121,11 @@ export const RowMaterialsColumns = [
     },
     cell: ({ row }) => {
       let styling;
-      const status = row.original;
-      if (status.quantity <= status.minQuantity * 0.5) {
-        styling = { status: 'critical', label: 'Critical', color: 'bg-red-100 text-red-700 border-red-200' };
-      } else if (status.quantity <= status.minQuantity) {
-        styling = { status: 'low', label: 'Low Stock', color: 'bg-yellow-100 text-yellow-700 border-yellow-200' };
+      const status = row.original.stock;
+      if (status =="out_stock") {
+        styling = { status: 'out_stock', label: 'Out Stock', color: 'bg-red-100 text-red-700 border-red-200' };
+      } else if (status =="low_stock") {
+        styling = { status: 'low_stock', label: 'Low Stock', color: 'bg-yellow-100 text-yellow-700 border-yellow-200' };
       }
       else {
         styling = { status: 'good', label: 'Good', color: 'bg-green-100 text-green-700 border-green-200' };
@@ -143,13 +148,13 @@ export const RowMaterialsColumns = [
 ]
 export const RequsetsColumns = [
   {
-    accessorKey: "id",
+    accessorKey: "request_id",
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="text-left hover:bg-transparent hover:text-black"
+          className="text-left hover:bg-transparent hover:text-main-gold"
         >
           Request ID
           <ArrowUpDown className="h-4 w-4" />
@@ -158,13 +163,13 @@ export const RequsetsColumns = [
     },
   },
   {
-    accessorKey: "materialName",
+    accessorKey: "name",
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="text-left hover:bg-transparent hover:text-black"
+          className="text-left hover:bg-transparent hover:text-main-gold"
         >
           Name
           <ArrowUpDown className="h-4 w-4" />
@@ -179,7 +184,7 @@ export const RequsetsColumns = [
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="text-left hover:bg-transparent hover:text-black"
+          className="text-left hover:bg-transparent hover:text-main-gold"
         >
           Quantity
           <ArrowUpDown className="h-4 w-4" />
@@ -194,7 +199,7 @@ export const RequsetsColumns = [
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="text-left hover:bg-transparent hover:text-black"
+          className="text-left hover:bg-transparent hover:text-main-gold"
         >
           Date
           <ArrowUpDown className="h-4 w-4" />
@@ -209,7 +214,7 @@ export const RequsetsColumns = [
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="text-left hover:bg-transparent hover:text-black"
+          className="text-left hover:bg-transparent hover:text-main-gold"
         >
           Status
           <ArrowUpDown className="h-4 w-4" />
@@ -221,28 +226,28 @@ export const RequsetsColumns = [
       let styling = {}
       if (status === "pending") {
         styling = { status: 'pending', label: 'Pending', color: 'bg-yellow-100 text-yellow-700 border-yellow-200' };
-      } else if (status === "accepted") {
-        styling = { status: 'accepted', label: 'Accepted', color: 'bg-green-100 text-green-700 border-green-200' };
-      } else if (status === "rejected") {
+      } else if (status === "approved") {
+        styling = { status: 'approved', label: 'Approved', color: 'bg-green-100 text-green-700 border-green-200' };
+      } else if (status === "reject") {
         styling = { status: 'rejected', label: 'Rejected', color: 'bg-red-100 text-red-700 border-red-200' };
-      } else if (status === "shipped") {
-        styling = { status: 'shipped', label: 'Shipped', color: 'bg-blue-100 text-blue-700 border-blue-200' };
-      } else if (status === "delivered") {
-        styling = { status: 'delivered', label: 'Delivered', color: 'bg-green-100 text-green-700 border-green-200' };
-      }
+      } else if (status === 'partially_approved') {
+        styling = { status: 'partially_approved', label: 'Partially Approved', color: 'bg-blue-100 text-blue-700 border-blue-200' };
+      } 
+      
+      if(status==null) return null
       return (
         <Badge className={styling.color}>{styling.label}</Badge>
       )
     }
   },
   {
-    accessorKey: "adminResponse",
+    accessorKey: "admin_response",
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="text-left hover:bg-transparent hover:text-black"
+          className="text-left hover:bg-transparent hover:text-main-gold"
         >
           Admin Response
           <ArrowUpDown className="h-4 w-4" />
@@ -263,30 +268,15 @@ export const RequsetsColumns = [
 ]
 export const HistoryColumns = [
   {
-    accessorKey: "itemName",
+    accessorKey: "item_name",
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="text-left hover:bg-transparent hover:text-black"
+          className="text-left hover:bg-transparent hover:text-main-gold"
         >
           Item Name
-          <ArrowUpDown className="h-4 w-4" />
-        </Button>
-      )
-    },
-  },
-  {
-    accessorKey: "quantity",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="text-left hover:bg-transparent hover:text-black"
-        >
-          Quantity
           <ArrowUpDown className="h-4 w-4" />
         </Button>
       )
@@ -299,9 +289,39 @@ export const HistoryColumns = [
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="text-left hover:bg-transparent hover:text-black"
+          className="text-left hover:bg-transparent hover:text-main-gold"
         >
           Date
+          <ArrowUpDown className="h-4 w-4" />
+        </Button>
+      )
+    },
+  },
+  {
+    accessorKey: "quantity",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="text-left hover:bg-transparent hover:text-main-gold"
+        >
+          Quantity
+          <ArrowUpDown className="h-4 w-4" />
+        </Button>
+      )
+    },
+  },
+  {
+    accessorKey: "performed_by",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="text-left hover:bg-transparent hover:text-main-gold"
+        >
+          Performed By
           <ArrowUpDown className="h-4 w-4" />
         </Button>
       )
@@ -314,7 +334,7 @@ export const HistoryColumns = [
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="text-left hover:bg-transparent hover:text-black"
+          className="text-left hover:bg-transparent hover:text-main-gold"
         >
           Type
           <ArrowUpDown className="h-4 w-4" />
@@ -322,32 +342,10 @@ export const HistoryColumns = [
       )
     },
     cell: ({ row }) => {
-      const type = row.original.type
-      let styling = {}
-      if (type === "in") {
-        styling = { label: 'usage (+)', color: 'bg-green-100 text-green-700 border-green-200' };
-      } else if (type === "out") {
-        styling = { label: "Restock (-)", color: 'bg-red-100 text-red-700 border-red-200' };
-      }
       return (
-        <Badge className={styling.color}>{styling.label}</Badge>
+        <Badge className={"bg-main-green text-main-gold"}>{row.original.type}</Badge>
       )
     }
-  },
-  {
-    accessorKey: "performedBy",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="text-left hover:bg-transparent hover:text-black"
-        >
-          Performed By
-          <ArrowUpDown className="h-4 w-4" />
-        </Button>
-      )
-    },
   },
   {
     accessorKey: "notes",
@@ -356,7 +354,7 @@ export const HistoryColumns = [
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="text-left hover:bg-transparent hover:text-black"
+          className="text-left hover:bg-transparent hover:text-main-gold"
         >
           Notes
           <ArrowUpDown className="h-4 w-4" />
@@ -364,6 +362,4 @@ export const HistoryColumns = [
       )
     },
   }
-
 ]
-        
