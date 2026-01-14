@@ -21,6 +21,8 @@ import { Input } from "../ui/input"
 import { Search } from "lucide-react"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
 import { DataTablePagination } from "../RawMateriales/TablePagination"
+import { useQuery } from "@tanstack/react-query"
+import { getMaterialsCategories } from "@/api/materials"
 
 
 
@@ -44,15 +46,18 @@ export function ExternalTable({
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
   })
+  const { data: matrialsCategories } = useQuery({
+    queryKey: ["categories"],
+    queryFn: getMaterialsCategories
+  })
+
   const categories = [
     { value: 'all', label: 'All Categories' },
-    { value: 'packaging', label: 'Packaging' },
-    { value: 'cleaning', label: 'Cleaning' },
-    { value: 'maintenance', label: 'Maintenance' },
-    { value: 'other', label: 'Other' },
+    ...(matrialsCategories?.map((cat) => ({ value: cat.name, label: cat.name })) || []),
   ];
-
+  const status = data?.map((item) => item.status)
   const [categoryFilter, setCategoryFilter] = useState('all');
+  const [statusFilter, setStatusFilter] = useState('all');
 
   return (
     <div className="space-y-4">
@@ -75,7 +80,7 @@ export function ExternalTable({
             value={categoryFilter}
             onValueChange={(value) => {
               setCategoryFilter(value);
-              table.getColumn("category")?.setFilterValue(value === "all" ? undefined : value);
+              table.getColumn("category_name")?.setFilterValue(value === "all" ? undefined : value);
             }}
           >
             <SelectTrigger className="w-[180px] border-main-green/30">
@@ -85,6 +90,28 @@ export function ExternalTable({
               {categories.map((cat) => (
                 <SelectItem key={cat.value} value={cat.value}>
                   {cat.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          <Select
+            value={statusFilter}
+            onValueChange={(value) => {
+              setStatusFilter(value);
+              table.getColumn("status")?.setFilterValue(value === "all" ? undefined : value);
+            }}
+          >
+            <SelectTrigger className="w-[180px] border-main-green/30">
+              <SelectValue placeholder="Status" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem key="all" value="all">
+                All Status
+              </SelectItem>
+              {status.map((stat) => (
+                <SelectItem key={stat} value={stat}>
+                  {stat}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -121,14 +148,7 @@ export function ExternalTable({
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id} >
-                      {cell.column.id === "name" ? (
-                        <div className="flex items-center gap-2">
-                          <img className="size-16 object-contain" src="/coffee.png" alt="img" />
-                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                        </div>
-                      ) : (
-                        flexRender(cell.column.columnDef.cell, cell.getContext())
-                      )}
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </TableCell>
                   ))}
                 </TableRow>

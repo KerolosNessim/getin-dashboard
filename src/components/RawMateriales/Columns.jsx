@@ -106,7 +106,7 @@ export const RowMaterialsColumns = [
     },
   },
   {
-    id: "status",
+    accessorKey: "status",
     header: ({ column }) => {
       return (
         <Button

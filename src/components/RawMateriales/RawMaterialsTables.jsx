@@ -55,12 +55,7 @@ export function DataTable({
     { value: 'all', label: 'All Categories' },
     ...(matrialsCategories?.map((cat) => ({ value: cat.name, label: cat.name })) || []),
   ];
-  const status = [
-    { value: 'all', label: 'All Status' },
-    { value: 'Low Stock', label: 'Low Stock' },
-    { value: 'Out Stock', label: 'Out Stock' },
-    { value: 'Good', label: 'Good' },
-  ];
+  const status = data?.map((item) => item.status)
   const [categoryFilter, setCategoryFilter] = useState('all');
   const [statusFilter, setStatusFilter] = useState('all');
 
@@ -111,9 +106,12 @@ export function DataTable({
               <SelectValue placeholder="Status" />
             </SelectTrigger>
             <SelectContent>
+              <SelectItem key="all" value="all">
+                All Status
+              </SelectItem>
               {status.map((stat) => (
-                <SelectItem key={stat.value} value={stat.value}>
-                  {stat.label}
+                <SelectItem key={stat} value={stat}>
+                  {stat}
                 </SelectItem>
               ))}
             </SelectContent>
