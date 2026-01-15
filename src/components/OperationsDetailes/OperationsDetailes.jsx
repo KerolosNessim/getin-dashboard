@@ -1,31 +1,12 @@
-"use client";
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from '../ui/button';
 import { ArrowUpDown } from 'lucide-react';
 import { HistoryTable } from "../HistoryTable/HistoryTable";
-const OperationsDetailes = () => {
-
-  const stats = {
-    totalSales: "12,540",
-    ordersCount: 320,
-    avgOrder: "39.2",
-    peakHour: "7 PM",
-    lowHour: "11 AM",
-  };
-
-  const products = [
-    { name: "Latte", orders: 120, sales: 3600, rate: "32%", inStore: 90, delivery: 30 },
-    { name: "Cappuccino", orders: 80, sales: 2400, rate: "21%", inStore: 55, delivery: 25 },
-    { name: "Espresso", orders: 65, sales: 1300, rate: "17%", inStore: 60, delivery: 5 },
-    { name: "Mocha", orders: 55, sales: 1650, rate: "15%", inStore: 46, delivery: 9 },
-    { name: "Americano", orders: 40, sales: 800, rate: "10%", inStore: 20, delivery: 20 },
-    { name: "Flat White", orders: 20, sales: 600, rate: "5%", inStore: 13, delivery: 7 },
-  ];
-
+const OperationsDetailes = ({reports}) => {
   const columns = [
     {
-      accessorKey: 'name',
+      accessorKey: 'product_name',
       header: ({ column }) => {
         return (
           <Button
@@ -38,7 +19,7 @@ const OperationsDetailes = () => {
           </Button>
         )
       },
-      cell: ({ row }) => <span className="font-bold text-main-green">{row.original.name}</span>,
+      cell: ({ row }) => <span className="font-bold text-main-green">{row.getValue("product_name")}</span>,
     },
     {
       accessorKey: 'orders',
@@ -54,7 +35,7 @@ const OperationsDetailes = () => {
           </Button>
         )
       },
-      cell: ({ row }) => <span className="font-bold text-main-green">{row.original.orders}</span>,
+      cell: ({ row }) => <span className="font-bold text-main-green">{row.getValue("orders")}</span>,
     },
     {
       accessorKey: 'sales',
@@ -70,7 +51,7 @@ const OperationsDetailes = () => {
           </Button>
         )
       },
-      cell: ({ row }) => <span className="font-bold text-main-green">{row.original.sales}</span>,
+      cell: ({ row }) => <span className="font-bold text-main-green">{row.getValue("sales")}</span>,
     },
     {
       accessorKey: 'rate',
@@ -86,10 +67,10 @@ const OperationsDetailes = () => {
           </Button>
         )
       },
-      cell: ({ row }) => <span className="font-bold text-main-green">{row.original.rate}</span>,
+      cell: ({ row }) => <span className="font-bold text-main-green">{row.getValue("rate")}</span>,
     },
     {
-      accessorKey: 'inStore',
+      accessorKey: 'in_store_order_ids',
       header: ({ column }) => {
         return (
           <Button
@@ -102,10 +83,10 @@ const OperationsDetailes = () => {
           </Button>
         )
       },
-      cell: ({ row }) => <span className="font-bold text-main-green">{row.original.inStore}</span>,
+      cell: ({ row }) => <span className="font-bold text-main-green">{row.getValue("in_store_order_ids").length}</span>,
     },
     {
-      accessorKey: 'delivery',
+      accessorKey: 'delivery_order_ids',
       header: ({ column }) => {
         return (
           <Button
@@ -118,7 +99,7 @@ const OperationsDetailes = () => {
           </Button>
         )
       },
-      cell: ({ row }) => <span className="font-bold text-main-green">{row.original.delivery}</span>,
+      cell: ({ row }) => <span className="font-bold text-main-green">{row.getValue("delivery_order_ids").length}</span>,
     }
   ]
 
@@ -134,8 +115,8 @@ const OperationsDetailes = () => {
             <CardTitle className="text-main-green text-xl font-semibold">Total Sales (₺)</CardTitle>
           </CardHeader>
           <CardContent className="text-main-green text-2xl font-semibold ">
-            {stats.totalSales}
-            <p className="text-sm text-gray-600 mt-1"> to yesterday: <span className="text-red-600">-31.74%</span></p>
+            {reports?.kpis?.total_sales?.value}
+            <p className="text-sm text-gray-600 mt-1"> to yesterday: {reports?.kpis?.total_sales?.change_yesterday}</p>
           </CardContent>
         </Card>
 
@@ -144,8 +125,8 @@ const OperationsDetailes = () => {
             <CardTitle className="text-main-green text-xl font-semibold">Orders</CardTitle>
           </CardHeader>
           <CardContent className="text-main-green text-xl font-semibold">
-            {stats.ordersCount}
-            <p className="text-sm text-gray-600 mt-1"> to yesterday: <span className="text-green-600">+3.4</span></p>
+            {reports?.kpis?.orders?.value}
+            <p className="text-sm text-gray-600 mt-1"> to yesterday: {reports?.kpis?.orders?.change_yesterday}</p>
           </CardContent>
         </Card>
 
@@ -154,8 +135,8 @@ const OperationsDetailes = () => {
             <CardTitle className="text-main-green text-xl font-semibold">AVG Order (₺)</CardTitle>
           </CardHeader>
           <CardContent className="text-main-green text-xl font-semibold">
-            {stats.avgOrder}
-            <p className="text-sm text-gray-600 mt-1"> to yesterday: <span className="text-red-600">-31.74%</span></p>
+            {reports?.kpis?.avg_order?.value}
+            <p className="text-sm text-gray-600 mt-1"> to yesterday: {reports?.kpis?.avg_order?.change_yesterday}</p>
           </CardContent>
         </Card>
 
@@ -164,8 +145,8 @@ const OperationsDetailes = () => {
             <CardTitle className="text-main-green text-xl font-semibold">Peak Hour</CardTitle>
           </CardHeader>
           <CardContent className="text-main-green text-xl font-semibold">
-            {stats.peakHour}
-            <p className="text-sm text-gray-600 mt-1">yesterday: <span className="text-red-600">5 PM</span></p>
+            {reports?.kpis?.peak_hour?.value}
+            <p className="text-sm text-gray-600 mt-1">yesterday: {reports?.kpis?.peak_hour?.yesterday}</p>
 
           </CardContent>
         </Card>
@@ -175,8 +156,8 @@ const OperationsDetailes = () => {
             <CardTitle className="text-main-green text-xl font-semibold">Lowest Hour</CardTitle>
           </CardHeader>
           <CardContent className="text-main-green text-xl font-semibold">
-            {stats.lowHour}
-            <p className="text-sm text-gray-600 mt-1">yesterday: <span className="text-red-600">9 AM</span></p>
+            {reports?.kpis?.lowest_hour?.value}
+            <p className="text-sm text-gray-600 mt-1">yesterday: {reports?.kpis?.lowest_hour?.yesterday}</p>
 
           </CardContent>
         </Card>
@@ -190,7 +171,7 @@ const OperationsDetailes = () => {
           <CardTitle className="text-main-green text-lg">Products Performance</CardTitle>
         </CardHeader>
         <CardContent>
-          <HistoryTable columns={columns} data={products} />
+          <HistoryTable columns={columns} data={reports?.products_performance||[]} />
         </CardContent>
       </Card>
 

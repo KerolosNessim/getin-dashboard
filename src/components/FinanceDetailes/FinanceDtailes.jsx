@@ -3,27 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { HistoryTable } from '../HistoryTable/HistoryTable';
 import { Button } from '../ui/button';
 import { ArrowUpDown } from 'lucide-react';
-const FinanceDtailes = () => {
-  const data = [
-    {
-      source: "In Store",
-      totalSales: 17775.4,
-      netIncome: 11211.44,
-      discount: 7563.96,
-      orders: 700,
-      avgBeforeDiscount: 27.31,
-      avgAfterDiscount: 16.87
-    },
-    {
-      source: "Delivery",
-      totalSales: 2775.4,
-      netIncome: 1211.44,
-      discount: 1563.96,
-      orders: 24,
-      avgBeforeDiscount: 27.31,
-      avgAfterDiscount: 16.87
-    }
-  ];
+const FinanceDtailes = ({reports}) => {
   const columns = [
     {
       accessorKey: 'source',
@@ -38,10 +18,10 @@ const FinanceDtailes = () => {
             <ArrowUpDown className="h-4 w-4" />
           </Button>
         )},
-      cell: ({ row }) => <span className="font-bold text-main-green">{row.original.source}</span>,
+      cell: ({ row }) => <span className="font-bold text-main-green">{row.getValue("source")}</span>,
     },
     {
-      accessorKey: 'totalSales',
+      accessorKey: 'total_sales',
       header: ({ column }) => {
         return (
           <Button
@@ -54,10 +34,10 @@ const FinanceDtailes = () => {
           </Button>
         )
       },
-      cell: ({ row }) => <span className="font-bold text-main-green">${row.original.totalSales}</span>,
+      cell: ({ row }) => <span className="font-bold text-main-green">{row.getValue("total_sales")}</span>,
     },
     {
-      accessorKey: 'netIncome',
+      accessorKey: 'net_income',
       header: ({ column }) => {
         return (
           <Button
@@ -70,10 +50,10 @@ const FinanceDtailes = () => {
           </Button>
         )
       },
-      cell: ({ row }) => <span className="font-bold text-main-green">${row.original.netIncome}</span>,
+      cell: ({ row }) => <span className="font-bold text-main-green">{row.getValue("net_income")}</span>,
     },
     {
-      accessorKey: 'discount',
+      accessorKey: 'discount_percent',
       header: ({ column }) => {
         return (
           <Button
@@ -86,7 +66,7 @@ const FinanceDtailes = () => {
           </Button>
         )
       },
-      cell: ({ row }) => <span className="font-bold text-main-green">${row.original.discount}</span>,
+      cell: ({ row }) => <span className="font-bold text-main-green">{row.getValue("discount_percent")}</span>,
     },
     {
       accessorKey: 'orders',
@@ -102,10 +82,10 @@ const FinanceDtailes = () => {
           </Button>
         )
       },
-      cell: ({ row }) => <span className="font-bold text-main-green">{row.original.orders}</span>,
+      cell: ({ row }) => <span className="font-bold text-main-green">{row.getValue("orders")}</span>,
     },
     {
-      accessorKey: 'avgBeforeDiscount',
+      accessorKey: 'avg_before_discount',
       header: ({ column }) => {
         return (
           <Button
@@ -118,10 +98,10 @@ const FinanceDtailes = () => {
           </Button>
         )
       },
-      cell: ({ row }) => <span className="font-bold text-main-green">${row.original.avgBeforeDiscount}</span>,
+      cell: ({ row }) => <span className="font-bold text-main-green">{row.getValue("avg_before_discount")}</span>,
     },
     {
-      accessorKey: 'avgAfterDiscount',
+      accessorKey: 'avg_after_discount',
       header: ({ column }) => {
         return (
           <Button
@@ -134,7 +114,7 @@ const FinanceDtailes = () => {
           </Button>
         )
       },
-      cell: ({ row }) => <span className="font-bold text-main-green">${row.original.avgAfterDiscount}</span>,
+      cell: ({ row }) => <span className="font-bold text-main-green">{row.getValue("avg_after_discount")}</span>,
     },
   ];
 
@@ -148,10 +128,10 @@ const FinanceDtailes = () => {
             <CardTitle className="text-main-green text-xl font-semibold">Sales Amount (₺)</CardTitle>
           </CardHeader>
           <CardContent className='flex  items-center justify-between'>
-            <p className="text-3xl font-semibold text-main-green">19,775.40</p>
+            <p className="text-3xl font-semibold text-main-green">{reports?.kpis?.sales_amount?.value}</p>
             <div>
-              <p className="text-sm text-gray-600 mt-1"> to yesterday: <span className="text-red-600">-31.74%</span></p>
-              <p className="text-sm text-gray-600 mt-1"> to last month: <span className="text-green-600">+3.74%</span></p>
+              <p className="text-sm text-gray-600 mt-1"> to yesterday: {reports?.kpis?.sales_amount?.change_yesterday}</p>
+              <p className="text-sm text-gray-600 mt-1"> to last month: {reports?.kpis?.sales_amount?.change_last_month}</p>
             </div>
           </CardContent>
         </Card>
@@ -161,10 +141,10 @@ const FinanceDtailes = () => {
             <CardTitle className="text-main-green text-xl font-semibold">Net Revenue (₺)</CardTitle>
           </CardHeader>
           <CardContent className='flex  items-center justify-between'>
-            <p className="text-3xl font-semibold text-main-green"> 12211.44</p>
+            <p className="text-3xl font-semibold text-main-green"> {reports?.kpis?.net_revenue?.value}</p>
             <div>
-              <p className="text-sm text-gray-600 mt-1"> to yesterday: <span className="text-red-600">-31.74%</span></p>
-              <p className="text-sm text-gray-600 mt-1"> to last month: <span className="text-green-600">+3.74%</span></p>
+              <p className="text-sm text-gray-600 mt-1"> to yesterday: {reports?.kpis?.net_revenue?.change_yesterday}</p>
+              <p className="text-sm text-gray-600 mt-1"> to last month: {reports?.kpis?.net_revenue?.change_last_month}</p>
             </div>
           </CardContent>
         </Card>
@@ -228,7 +208,7 @@ const FinanceDtailes = () => {
           <CardTitle className="text-main-green text-xl font-semibold ">statistics Details</CardTitle>
         </CardHeader>
         <CardContent>
-          <HistoryTable columns={columns} data={data} />
+          <HistoryTable columns={columns} data={reports?.statistics_details||[]} />
         </CardContent>
       </Card>
     </div>

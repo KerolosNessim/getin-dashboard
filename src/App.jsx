@@ -1,13 +1,13 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import Layout from "./components/Layout/Layout";
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
 import PublicRoute from "./components/ProtectedRoute/PublicRoute";
 import { Toaster } from "./components/ui/sonner";
 import CalculatorPage from "./pages/CalculatorPage/CalculatorPage";
+import DailySettlementPage from './pages/DailySettlementPage/DailySettlementPage';
 import ExternalMaterialsPage from "./pages/ExternalMaterialsPage/ExternalMaterialsPage";
-import InventoryPage from "./pages/InventoryPage/InventoryPage";
 import LoginPage from "./pages/LoginPage/LoginPage";
 import LoyaltyPage from "./pages/LoyaltyPage/LoyaltyPage";
 import OrdersPage from "./pages/OrdersPage/OrdersPage";
@@ -18,6 +18,7 @@ import ReturnsPage from "./pages/ReturnsPage/ReturnsPage";
 import SettingsPage from "./pages/SettingsPage/SettingsPage";
 import SingleOrderPage from "./pages/SingleOrderPage/SingleOrderPage";
 import SingleProductPage from "./pages/singleProductPage/SingleProductPage";
+import AttendencePage from './pages/AttendencePage/AttendencePage';
 
 
 const queryClient = new QueryClient()
@@ -56,10 +57,14 @@ function App() {
           path: '/reports',
           element: <ProtectedRoute><ReportsPage /></ProtectedRoute>
         },
-        // {
-        //   path: '/inventory',
-        //   element: <ProtectedRoute><InventoryPage /></ProtectedRoute>
-        // },
+        {
+          path: '/daily-settlement',
+          element: <ProtectedRoute><DailySettlementPage /></ProtectedRoute>
+        },
+        {
+          path: '/attendence',
+          element: <ProtectedRoute><AttendencePage /></ProtectedRoute>
+        },
         {
           path: '/returns',
           element: <ProtectedRoute><ReturnsPage /></ProtectedRoute>

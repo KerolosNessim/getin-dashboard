@@ -118,7 +118,7 @@ const ShiftHandoverCards = () => {
         </Card>
       </div>
 
-    <div className="grid grid-cols-1  lg:grid-cols-2 gap-4">
+    <div className="grid grid-cols-1  lg:grid-cols-3 gap-4">
       {employees.map(emp => (
         <Card key={emp.id} className="border-main-gold bg-main-gold/20 border-l-4">
           <CardHeader className="flex justify-between items-center">

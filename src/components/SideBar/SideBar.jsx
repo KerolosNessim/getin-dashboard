@@ -1,21 +1,18 @@
-import React from 'react';
+import { useUserStore } from '@/stores/UserStore';
 import {
   FaBox,
-  FaClipboardList,
-  FaFlask,
-  FaTruck,
-  FaUserClock,
-  FaSignOutAlt,
   FaCalculator,
-  FaWarehouse,
-  FaUndo,
+  FaClipboardList,
+  FaCog,
+  FaFlask,
   FaStar,
-  FaCog
+  FaTruck,
+  FaWarehouse
 } from 'react-icons/fa';
-import { IoMdPower, IoMdWarning } from 'react-icons/io';
+import { IoMdPower } from 'react-icons/io';
 import { MdCurrencyExchange } from 'react-icons/md';
-import { Link, NavLink, useNavigate, useLocation } from 'react-router-dom';
-import { useUserStore } from '@/stores/UserStore';
+import { ImUsers } from "react-icons/im";
+import { Link, NavLink, useLocation } from 'react-router-dom';
 import { toast } from 'sonner';
 
 const SideBar = () => {
@@ -31,8 +28,9 @@ const SideBar = () => {
     { icon: <FaBox size={24} />, label: 'Products', path: '/' },
     { icon: <FaClipboardList size={24} />, label: 'Orders', path: '/orders' },
     { icon: <MdCurrencyExchange size={24} />, label: 'Reports', path: '/reports' },
-    // { icon: <FaWarehouse size={24} />, label: 'Inventory', path: '/inventory' },
-    { icon: <IoMdWarning size={24} />, label: 'Discarding', path: '/returns' },
+    { icon: <FaWarehouse size={24} />, label: 'Daily Settlement', path: '/daily-settlement' },
+    { icon: <ImUsers size={24} />, label: 'Shift Handover', path: '/attendence' },
+    // { icon: <IoMdWarning size={24} />, label: 'Discarding', path: '/returns' },
     { icon: <FaStar size={24} />, label: 'Loyalty', path: '/loyalty' },
     { icon: <FaFlask size={24} />, label: 'Raw Materials', path: '/raw-materials' },
     { icon: <FaTruck size={24} />, label: 'External Materials', path: '/external-materials' },

@@ -20,10 +20,9 @@ export default function ReportsPage() {
     "Financial Reports",
     "Operations Reports",
     "Products Reports",
-    "Daily Settlement",
-    "Shift Handover",
-    // "Reconciliation Differences"
   ];
+
+  
   return (
     <div className="pb-4">
       {/* Header Section */}
@@ -48,12 +47,6 @@ export default function ReportsPage() {
         </TabsContent>
         <TabsContent value={"Products Reports"}>
           <ProductsReports />
-        </TabsContent>
-        <TabsContent value={"Daily Settlement"}>
-          <DailySettlementRport />
-        </TabsContent>
-        <TabsContent value={"Shift Handover"}>
-          <ShiftHandoverRport />
         </TabsContent>
       </Tabs>
     </div>
