@@ -1,8 +1,8 @@
 import api from "./config";
 
-export async function getEmployees() {
+export async function getEmployees(page=1) {
   try {
-    const response = await api.get(`/branch/employees`);
+    const response = await api.get(`/branch/employees?page=${page}`);
     return response?.data;
   } catch (error) {
     console.error("Error fetching getEmployees:", error);

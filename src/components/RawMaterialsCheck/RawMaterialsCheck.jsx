@@ -20,32 +20,35 @@ import { Input } from "@/components/ui/input";
 import { HistoryTable } from "../HistoryTable/HistoryTable";
 import { ArrowUpDown } from "lucide-react";
 
+import { useQuery } from "@tanstack/react-query";
+import { getMaterials } from "@/api/materials";
+
 const RawMaterialsCheck = () => {
   const [selectedItem, setSelectedItem] = useState(null);
   const [actualQty, setActualQty] = useState("");
   const [error, setError] = useState("");
 
-  const materials = [
-    { id: 1, name: "Coffee Beans", expected: 80 },
-    { id: 2, name: "Milk", expected: 25 },
-    { id: 3, name: "Sugar", expected: 10 },
-    { id: 4, name: "Chocolate Powder", expected: 12 },
-  ];
+  const { data: materialsData } = useQuery({
+    queryKey: ["materials"],
+    queryFn: getMaterials,
+  });
+
+  const materials = materialsData || [];
 
   const [checks, setChecks] = useState({});
 
   const handleSave = () => {
     const entered = Number(actualQty);
+    const expected = Number(selectedItem.stock); // API uses 'stock' for expected qty
 
-    // ❗ Logic is EXTREMELY simple now
-    if (entered > selectedItem.expected) {
-      setError(`Actual quantity (${entered}) can't be more than expected (${selectedItem.expected}) - Please recheck`);
+    if (entered > expected) {
+      setError(`Actual quantity (${entered}) can't be more than expected (${expected}) - Please recheck`);
       return;
     }
 
     setError("");
 
-    const diff = selectedItem.expected - entered;
+    const diff = expected - entered;
 
     setChecks((prev) => ({
       ...prev,
@@ -60,12 +63,12 @@ const RawMaterialsCheck = () => {
     setSelectedItem(null);
   };
 
-
-
   const tableData = materials.map((mat) => {
     const result = checks[mat.id];
     return {
       ...mat,
+      name: mat.material_name,
+      expected: mat.stock,
       actual: result ? result.actual : "-",
       diff: result ? result.diff : "-",
       status: result ? result.status : "-",

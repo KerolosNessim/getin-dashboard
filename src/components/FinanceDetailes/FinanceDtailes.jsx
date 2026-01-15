@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { HistoryTable } from '../HistoryTable/HistoryTable';
 import { Button } from '../ui/button';
 import { ArrowUpDown } from 'lucide-react';
-const FinanceDtailes = ({reports}) => {
+const FinanceDtailes = ({ reports }) => {
   const columns = [
     {
       accessorKey: 'source',
@@ -17,7 +17,8 @@ const FinanceDtailes = ({reports}) => {
             Source
             <ArrowUpDown className="h-4 w-4" />
           </Button>
-        )},
+        )
+      },
       cell: ({ row }) => <span className="font-bold text-main-green">{row.getValue("source")}</span>,
     },
     {
@@ -154,10 +155,10 @@ const FinanceDtailes = ({reports}) => {
             <CardTitle className="text-main-green text-xl font-semibold">Discount Amount (₺)</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-3xl font-semibold text-main-green">7563.96</p>
+            <p className="text-3xl font-semibold text-main-green">{reports?.kpis?.discount_amount?.value || 0}</p>
             <div className='flex  items-center justify-between'>
-              <p className="text-sm text-gray-600 mt-1"> to yesterday: <span className="text-red-600">-31.74%</span></p>
-              <p className="text-sm text-gray-600 mt-1"> to last month: <span className="text-green-600">+3.74%</span></p>
+              <p className="text-sm text-gray-600 mt-1"> to yesterday: <span className={reports?.kpis?.discount_amount?.change_yesterday?.startsWith("-") ? "text-red-600" : "text-green-600"}>{reports?.kpis?.discount_amount?.change_yesterday || 0}</span></p>
+              <p className="text-sm text-gray-600 mt-1"> to last month: <span className={reports?.kpis?.discount_amount?.change_last_month?.startsWith("-") ? "text-red-600" : "text-green-600"}>{reports?.kpis?.discount_amount?.change_last_month || 0}</span></p>
             </div>
           </CardContent>
         </Card>
@@ -167,10 +168,10 @@ const FinanceDtailes = ({reports}) => {
             <CardTitle className="text-main-green text-xl font-semibold">Effective Orders</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-3xl font-semibold text-main-green">724</p>
+            <p className="text-3xl font-semibold text-main-green">{reports?.kpis?.orders?.value || 0}</p>
             <div className='flex  items-center justify-between'>
-              <p className="text-sm text-gray-600 mt-1"> to yesterday: <span className="text-red-600">-12</span></p>
-              <p className="text-sm text-gray-600 mt-1"> to last month: <span className="text-red-600">-268</span></p>
+              <p className="text-sm text-gray-600 mt-1"> to yesterday: <span className={reports?.kpis?.orders?.change_yesterday < 0 ? "text-red-600" : "text-green-600"}>{reports?.kpis?.orders?.change_yesterday || 0}</span></p>
+              <p className="text-sm text-gray-600 mt-1"> to last month: <span className={reports?.kpis?.orders?.change_last_month < 0 ? "text-red-600" : "text-green-600"}>{reports?.kpis?.orders?.change_last_month || 0}</span></p>
             </div>
           </CardContent>
         </Card>
@@ -180,10 +181,10 @@ const FinanceDtailes = ({reports}) => {
             <CardTitle className="text-main-green text-xl font-semibold">Average (Before Discount) (₺)</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-3xl font-semibold text-main-green">27.31</p>
+            <p className="text-3xl font-semibold text-main-green">{reports?.kpis?.avg_before_discount?.value || 0}</p>
             <div className='flex  items-center justify-between'>
-              <p className="text-sm text-gray-600 mt-1"> to yesterday: <span className="text-red-600">-31.74%</span></p>
-              <p className="text-sm text-gray-600 mt-1"> to last month: <span className="text-green-600">+3.74%</span></p>
+              <p className="text-sm text-gray-600 mt-1"> to yesterday: <span className={reports?.kpis?.avg_before_discount?.change_yesterday?.startsWith("-") ? "text-red-600" : "text-green-600"}>{reports?.kpis?.avg_before_discount?.change_yesterday || 0}</span></p>
+              <p className="text-sm text-gray-600 mt-1"> to last month: <span className={reports?.kpis?.avg_before_discount?.change_last_month?.startsWith("-") ? "text-red-600" : "text-green-600"}>{reports?.kpis?.avg_before_discount?.change_last_month || 0}</span></p>
             </div>
           </CardContent>
         </Card>
@@ -193,10 +194,10 @@ const FinanceDtailes = ({reports}) => {
             <CardTitle className="text-main-green text-xl font-semibold">Average (After Discount) (₺)</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-3xl font-semibold text-main-green">16.87</p>
+            <p className="text-3xl font-semibold text-main-green">{reports?.kpis?.avg_after_discount?.value || 0}</p>
             <div className='flex  items-center justify-between'>
-              <p className="text-sm text-gray-600 mt-1"> to yesterday: <span className="text-red-600">-31.74%</span></p>
-              <p className="text-sm text-gray-600 mt-1"> to last month: <span className="text-green-600">+3.74%</span></p>
+              <p className="text-sm text-gray-600 mt-1"> to yesterday: <span className={reports?.kpis?.avg_after_discount?.change_yesterday?.startsWith("-") ? "text-red-600" : "text-green-600"}>{reports?.kpis?.avg_after_discount?.change_yesterday || 0}</span></p>
+              <p className="text-sm text-gray-600 mt-1"> to last month: <span className={reports?.kpis?.avg_after_discount?.change_last_month?.startsWith("-") ? "text-red-600" : "text-green-600"}>{reports?.kpis?.avg_after_discount?.change_last_month || 0}</span></p>
             </div>
           </CardContent>
         </Card>
@@ -208,7 +209,7 @@ const FinanceDtailes = ({reports}) => {
           <CardTitle className="text-main-green text-xl font-semibold ">statistics Details</CardTitle>
         </CardHeader>
         <CardContent>
-          <HistoryTable columns={columns} data={reports?.statistics_details||[]} />
+          <HistoryTable columns={columns} data={reports?.statistics_details || []} />
         </CardContent>
       </Card>
     </div>

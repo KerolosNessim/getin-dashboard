@@ -8,23 +8,23 @@ const ProductsReports = () => {
   const tabStyle = "bg-main-green text-main-gold text-base  h-12! data-[state=active]:bg-main-gold data-[state=active]:text-main-green"
   const tabs = [
     {
-      lable: "Today",
+      label: "Today",
       value: "today"
     },
     {
-      lable: "Yesterday",
+      label: "Yesterday",
       value: "yesterday"
     },
     {
-      lable: "This Week",
+      label: "This Week",
       value: "this_week"
     },
     {
-      lable: "This Month",
+      label: "This Month",
       value: "this_month"
     },
     {
-      lable: "This Year",
+      label: "This Year",
       value: "this_year"
     }
   ]
@@ -39,7 +39,7 @@ const ProductsReports = () => {
       <Tabs defaultValue={tabs[0].value} className="w-full   ">
         <TabsList className=" gap-2 p-2 rounded-lg bg-main-green/30">
           {tabs?.map((tab) => (
-            <TabsTrigger onClick={() => setFilter(tab?.value)} className={tabStyle} value={tab?.value}>{tab?.lable}</TabsTrigger>
+            <TabsTrigger onClick={() => setFilter(tab?.value)} className={tabStyle} value={tab?.value}>{tab?.label}</TabsTrigger>
           ))}
         </TabsList>
 
@@ -47,7 +47,7 @@ const ProductsReports = () => {
         {
           tabs.map((tab) => (
             <TabsContent key={tab.value} value={tab.value}>
-              <ProductsReportDetailes reports={reports}/>
+              <ProductsReportDetailes reports={reports} />
             </TabsContent>
           ))
         }
